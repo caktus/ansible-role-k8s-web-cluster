@@ -64,4 +64,4 @@
     - ingress-nginx/mandatory.yaml
     - ingress-nginx/cloud-generic.yaml
     - ingress-nginx/patch-configmap.yaml
-  when: kube_cluster_install_ingress
+  when: k8s_install_ingress_controller
