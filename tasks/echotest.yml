@@ -4,6 +4,7 @@
   k8s:
     context: "{{ k8s_context }}"
     kubeconfig: "{{ k8s_kubeconfig }}"
+    state: "{{ k8s_echotest_state }}"
     wait: yes
     validate:
       fail_on_error: yes

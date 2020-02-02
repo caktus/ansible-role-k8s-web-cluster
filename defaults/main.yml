@@ -4,4 +4,6 @@ k8s_context: ''
 
 k8s_install_ingress_controller: yes
 k8s_letsencrypt_email: ''
+
+k8s_echotest_state: present
 k8s_echotest_hostname: 'echotest.caktus-built.com'
