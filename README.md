@@ -19,12 +19,12 @@ Development sponsored by [Caktus Consulting Group, LLC](http://www.caktusgroup.c
 
 # Installation
 
-1. Add to your ``requirements.yml``:
+1. Add to your ``requirements.yaml``:
 
 
 ```yaml
 ---
-# file: deployment/requirements.yaml
+# file: deploy/requirements.yaml
 
 - src: https://github.com/caktus/ansible-role-k8s-web-cluster
   version: init-role  # TODO: remove
@@ -35,9 +35,9 @@ Development sponsored by [Caktus Consulting Group, LLC](http://www.caktusgroup.c
 
 ```yaml
 ---
-# file: playbooks/configure-cluster.yaml
+# file: deploy/deploy.yaml
 
-- hosts: k8s_clusters
+- hosts: k8s
   roles:
     - role: caktus.k8s-web-cluster
 ```
@@ -54,11 +54,14 @@ Development sponsored by [Caktus Consulting Group, LLC](http://www.caktusgroup.c
 k8s_cluster_type: <aws|gcp|azure|digitalocean>
 k8s_context: <name of context from ~/.kube/config>
 k8s_letsencrypt_email: <email to contact about expiring certs>
-
 k8s_echotest_hostname: <test hostname assigned to your cluster ip, e.g. echotest.caktus-built.com>
 ```
 
-4. Run ``playbooks/configure-cluster.yaml``
+4. Run ``deploy.yaml`` playbook:
+
+```sh
+ansible-playbook -l <host/group> deploy.yaml -vv
+```
 
 
 ### Testing that Let's Encrypt is working
@@ -71,9 +74,9 @@ k8s_echotest_hostname: <test hostname assigned to your cluster ip, e.g. echotest
 
 ```yaml
 ---
-# file: playbooks/echotest.yaml
+# file: echotest.yaml
 
-- hosts: k8s_clusters
+- hosts: k8s
   tasks:
     - name: Install echo test server
       import_role:
@@ -81,7 +84,11 @@ k8s_echotest_hostname: <test hostname assigned to your cluster ip, e.g. echotest
         tasks_from: echotest
 ```
 
-5. Run ``playbooks/echotest.yaml``
+5. Run ``echotest.yaml`` playbook:
+
+```sh
+ansible-playbook -l <host/group> echotest.yaml -vv
+```
 
 6. Give the certificate a couple minutes to be generated and validated. While waiting,
    you can watch the output of:
@@ -107,4 +114,8 @@ k8s_echotest_hostname: <test hostname assigned to your cluster ip, e.g. echotest
    If not, you may need to re-create the ingress by deleteing and re-applying
    it.
 
-8. When you're done, delete the echotest resources from the cluster. Run ``playbooks/echotest.yaml --extra-vars "k8s_echotest_state=absent"``
+8. When you're done, delete the echotest resources from the cluster. Run:
+
+```sh
+ansible-playbook -l <host/group> echotest.yaml --extra-vars "k8s_echotest_state=absent" -vv
+```
