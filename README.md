@@ -1,6 +1,6 @@
 # caktus.k8s-web-cluster
 
-An Ansible role to help set up Kubernetes clusters for web apps.
+An Ansible role to help configure Kubernetes clusters for web apps.
 
 
 # License
