@@ -1,7 +1,7 @@
 ---
 
 # cert-manager install process adapted from:
-# https://docs.cert-manager.io/en/latest/getting-started/install/kubernetes.html#installing-with-regular-manifests
+# https://cert-manager.io/docs/installation/kubernetes/#installing-with-regular-manifests
 - name: Create namespace for cert-manager
   k8s:
     context: "{{ k8s_context }}"
