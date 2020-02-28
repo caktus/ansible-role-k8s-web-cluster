@@ -8,3 +8,8 @@ k8s_letsencrypt_email: ''
 k8s_echotest_state: present
 k8s_echotest_hostname: 'echotest.caktus-built.com'
 k8s_echotest_letsencrypt_issuer: 'letsencrypt-staging'
+
+k8s_fluent_hostname: ''
+k8s_fluent_namespace: 'kube-system'
+k8s_fluent_papertrail_host: ''
+k8s_fluent_papertrail_port: ''

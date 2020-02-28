@@ -65,3 +65,15 @@
     - ingress-nginx/cloud-generic.yaml
     - ingress-nginx/patch-configmap.yaml
   when: k8s_install_ingress_controller
+
+# https://raw.githubusercontent.com/solarwinds/fluentd-deployment/master/kubernetes/fluentd-daemonset-papertrail.yaml
+- name: Deploy fluentd Papertrail DaemonSet
+  k8s:
+    context: "{{ k8s_context }}"
+    kubeconfig: "{{ k8s_kubeconfig }}"
+    wait: yes
+    validate:
+      fail_on_error: yes
+      strict: yes
+    definition: "{{ lookup('template', 'papertrail/fluentd-daemonset-papertrail.yaml') }}"
+  when: k8s_fluent_hostname | length > 0
