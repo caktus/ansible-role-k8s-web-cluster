@@ -1,3 +1,12 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: logspout-papertrail-secrets
+  namespace: '{{ k8s_papertrail_logspout_namespace }}'
+type: Opaque
+stringData:
+  papertrail-destination: '{{ k8s_papertrail_logspout_destination }}'
+---
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
@@ -28,7 +37,7 @@ spec:
             - name: ROUTE_URIS
               valueFrom:
                 secretKeyRef:
-                  name: papertrail-destination
+                  name: logspout-papertrail-secrets
                   key: papertrail-destination
           image: gliderlabs/logspout:master
           name: logspout
