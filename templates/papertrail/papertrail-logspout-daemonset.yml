@@ -28,12 +28,10 @@ spec:
             limits:
               memory: 500Mi
           env:
-{% raw %}
             - name: SYSLOG_TAG
-              value: '{{ index .Container.Config.Labels "io.kubernetes.pod.namespace" }}[{{ index .Container.Config.Labels "io.kubernetes.pod.name" }}]'
+              value: '{{ k8s_papertrail_logspout_syslog_tag }}'
             - name: SYSLOG_HOSTNAME
-              value: '{{ index .Container.Config.Labels "io.kubernetes.container.name" }}'
-{% endraw %}
+              value: '{{ k8s_papertrail_logspout_syslog_hostname }}'
             - name: ROUTE_URIS
               valueFrom:
                 secretKeyRef:
