@@ -65,3 +65,17 @@
     - ingress-nginx/cloud-generic.yaml
     - ingress-nginx/patch-configmap.yaml
   when: k8s_install_ingress_controller
+
+- name: Deploy Papertrail logspout
+  k8s:
+    context: "{{ k8s_context }}"
+    kubeconfig: "{{ k8s_kubeconfig }}"
+    state: "{{ k8s_papertrail_logspout_enabled | ternary('present', 'absent') }}"
+    wait: yes
+    validate:
+      fail_on_error: yes
+      strict: yes
+    # Stored locally to convert to template
+    # https://help.papertrailapp.com/assets/files/papertrail-logspout-daemonset.yml
+    definition: "{{ lookup('template', 'papertrail/papertrail-logspout-daemonset.yml') }}"
+  tags: [logspout]

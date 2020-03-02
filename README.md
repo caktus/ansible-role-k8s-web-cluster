@@ -3,9 +3,11 @@
 An Ansible role to help configure Kubernetes clusters for web apps.
 
 Supported cloud providers include GCP (GKE), AWS (EKS), Azure (AKS), and Digital
-Ocean. The configuration includes installing the Nginx Ingress Controller and
-some Let's Encrypt certificate issuers so the team can focus on the application
-deployment itself.
+Ocean. The configuration includes installing:
+
+* Nginx Ingress Controller
+* Let's Encrypt certificate issuer
+* Logspout for Papertrail
 
 
 # License
