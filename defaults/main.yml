@@ -13,4 +13,4 @@ k8s_papertrail_logspout_enabled: "{{ k8s_papertrail_logspout_destination | lengt
 k8s_papertrail_logspout_destination: ''  # format: syslog+tls://logsN.papertrailapp.com:XXXXX
 k8s_papertrail_logspout_syslog_hostname: '{% raw %}{{ index .Container.Config.Labels "io.kubernetes.container.name" }}{% endraw %}'
 k8s_papertrail_logspout_syslog_tag: '{% raw %}{{ index .Container.Config.Labels "io.kubernetes.pod.namespace" }}[{{ index .Container.Config.Labels "io.kubernetes.pod.name" }}]{% endraw %}'
-k8s_papertrail_logspout_namespace: 'default'
+k8s_papertrail_logspout_namespace: 'default'  # This namespace must exist already.
