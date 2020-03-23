@@ -6,6 +6,7 @@ Supported cloud providers include GCP (GKE), AWS (EKS), Azure (AKS), and Digital
 Ocean. The configuration includes installing:
 
 * Nginx Ingress Controller
+* Certificate manager (https://cert-manager.io/docs/) (https://github.com/jetstack/cert-manager)
 * Let's Encrypt certificate issuer
 * Logspout for Papertrail
 

@@ -4,6 +4,11 @@
 ## Changes
 
 
+### NEXT
+
+* Re-enable validation in cert-manager workspace after installing or updating
+  cert-manager and Lets Encrypt.
+
 ### v0.0.2 on Mar 1, 2020
 
 * Added Logspout for Papertrail
