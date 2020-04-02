@@ -79,3 +79,35 @@
     # https://help.papertrailapp.com/assets/files/papertrail-logspout-daemonset.yml
     definition: "{{ lookup('template', 'papertrail/papertrail-logspout-daemonset.yml') }}"
   tags: [logspout]
+
+- name: "Install kube-state-metrics {{ k8s_newrelic_kube_state_metrics_version }}"
+  k8s:
+    context: "{{ k8s_context }}"
+    kubeconfig: "{{ k8s_kubeconfig }}"
+    state: "{{ k8s_newrelic_enabled | ternary('present', 'absent') }}"
+    wait: yes
+    validate:
+      fail_on_error: yes
+      strict: yes
+    definition: "{{ lookup('url', item, split_lines=False) }}"
+  tags: [metrics]
+  with_items:
+  - "https://raw.githubusercontent.com/kubernetes/kube-state-metrics/{{ k8s_newrelic_kube_state_metrics_version }}/kubernetes/kube-state-metrics-cluster-role-binding.yaml"
+  - "https://raw.githubusercontent.com/kubernetes/kube-state-metrics/{{ k8s_newrelic_kube_state_metrics_version }}/kubernetes/kube-state-metrics-cluster-role.yaml"
+  - "https://raw.githubusercontent.com/kubernetes/kube-state-metrics/{{ k8s_newrelic_kube_state_metrics_version }}/kubernetes/kube-state-metrics-service-account.yaml"
+  - "https://raw.githubusercontent.com/kubernetes/kube-state-metrics/{{ k8s_newrelic_kube_state_metrics_version }}/kubernetes/kube-state-metrics-deployment.yaml"
+  - "https://raw.githubusercontent.com/kubernetes/kube-state-metrics/{{ k8s_newrelic_kube_state_metrics_version }}/kubernetes/kube-state-metrics-service.yaml"
+
+- name: Install New Relic Infrastructure Agent
+  k8s:
+    context: "{{ k8s_context }}"
+    kubeconfig: "{{ k8s_kubeconfig }}"
+    state: "{{ k8s_newrelic_enabled | ternary('present', 'absent') }}"
+    wait: yes
+    validate:
+      fail_on_error: yes
+      strict: yes
+    # Stored locally to convert to template
+    # https://docs.newrelic.com/docs/integrations/kubernetes-integration/installation/kubernetes-installation-configuration
+    definition: "{{ lookup('template', 'newrelic/newrelic-infrastructure-k8s-latest.yaml') }}"
+  tags: [metrics]
