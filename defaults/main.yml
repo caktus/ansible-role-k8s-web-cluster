@@ -16,6 +16,8 @@ k8s_papertrail_logspout_syslog_tag: '{% raw %}{{ index .Container.Config.Labels 
 k8s_papertrail_logspout_namespace: 'default'  # This namespace must exist already.
 
 k8s_newrelic_enabled: "{{ k8s_newrelic_license_key | length > 0 }}"
+# Found under "the latest supported version"
+# https://docs.newrelic.com/docs/integrations/kubernetes-integration/installation/kubernetes-installation-configuration#install
 k8s_newrelic_kube_state_metrics_version: "v1.7.2"
 k8s_newrelic_cluster_name: "{{ k8s_context }}"
 k8s_newrelic_license_key: ""
