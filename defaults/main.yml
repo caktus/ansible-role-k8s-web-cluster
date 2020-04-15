@@ -1,9 +1,18 @@
 k8s_kubeconfig: ~/.kube/config
-k8s_cluster_type: ''
-k8s_context: ''
+
+# <aws|gcp|azure|digitalocean>
+# k8s_cluster_type: ''
+
+# <name of context from ~/.kube/config>
+# k8s_context: ''
 
 k8s_install_ingress_controller: yes
-k8s_letsencrypt_email: ''
+
+# Let's Encrypt will use this to contact you about expiring
+# certificates, and issues related to your account.
+#k8s_letsencrypt_email: ''
+
+k8s_wait_timeout: 300  # seconds
 
 k8s_echotest_state: present
 k8s_echotest_hostname: 'echotest.caktus-built.com'
