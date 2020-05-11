@@ -8,6 +8,7 @@
 
 * Re-enable validation in cert-manager workspace after installing or updating
   cert-manager and Lets Encrypt.
+* On AWS, grant cluster access to IAM users in `k8s_iam_users`.
 
 ### v0.0.2 on Mar 1, 2020
 

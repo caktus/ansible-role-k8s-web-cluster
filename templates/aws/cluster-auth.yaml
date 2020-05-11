@@ -1,0 +1,14 @@
+# On AWS, creating this ConfigMap grants access to IAM users.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: aws-auth
+  namespace: kube-system
+data:
+  mapUsers: |
+    {% for user in k8s_iam_users -%}
+    - groups:
+      - system:masters
+      userarn: arn:aws:iam::{{ aws_account_id }}:user/{{ user }}
+      username: arn:aws:iam::{{ aws_account_id }}:user/{{ user }}
+    {% endfor %}
