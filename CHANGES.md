@@ -4,10 +4,12 @@
 ## Changes
 
 
-### NEXT
+### v0.0.3 on Jun 25, 2020
 
 * Re-enable validation in cert-manager workspace after installing or updating
   cert-manager and Lets Encrypt.
+* Add NewRelic Infrastructure support
+
 
 ### v0.0.2 on Mar 1, 2020
 
