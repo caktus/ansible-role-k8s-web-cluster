@@ -9,6 +9,7 @@ Ocean. The configuration includes installing:
 * Certificate manager (https://cert-manager.io/docs/) (https://github.com/jetstack/cert-manager)
 * Let's Encrypt certificate issuer
 * Logspout for Papertrail
+* For AWS, granting cluster access to IAM users
 
 
 # License
@@ -63,6 +64,8 @@ k8s_cluster_type: <aws|gcp|azure|digitalocean>
 k8s_context: <name of context from ~/.kube/config>
 k8s_letsencrypt_email: <email to contact about expiring certs>
 k8s_echotest_hostname: <test hostname assigned to your cluster ip, e.g. echotest.caktus-built.com>
+# aws only:
+k8s_iam_users: [list of IAM usernames who should be allowed to manage the cluster]
 ```
 
 4. Run ``deploy.yaml`` playbook:

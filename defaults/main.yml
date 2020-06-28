@@ -30,3 +30,9 @@ k8s_newrelic_enabled: "{{ k8s_newrelic_license_key | string | length > 0 }}"
 k8s_newrelic_kube_state_metrics_version: "v1.7.2"
 k8s_newrelic_cluster_name: "{{ k8s_context }}"
 k8s_newrelic_license_key: ""
+
+# For AWS, IAM users that should have access to the cluster (i.e., those users
+# who should be able to run `aws eks update-kubeconfig`). Users' access *will* be removed
+# if a user is removed from the list below and the Ansible playbook is re-run.
+# Values should be the IAM usernames (e.g. "johndev") and not anything more complicated.
+k8s_iam_users: []
