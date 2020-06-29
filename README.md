@@ -62,6 +62,7 @@ Development sponsored by [Caktus Consulting Group, LLC](http://www.caktusgroup.c
 
 k8s_cluster_type: <aws|gcp|azure|digitalocean>
 k8s_context: <name of context from ~/.kube/config>
+k8s_cluster_name: <display name for your cluster>
 k8s_letsencrypt_email: <email to contact about expiring certs>
 k8s_echotest_hostname: <test hostname assigned to your cluster ip, e.g. echotest.caktus-built.com>
 # aws only:
