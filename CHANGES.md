@@ -3,6 +3,11 @@
 
 ## Changes
 
+### NEXT
+
+* Introduce `k8s_cluster_name` variable
+
+
 ### v0.0.4 on Jun 28, 2020
 
 * On AWS, grant cluster access to IAM users in `k8s_iam_users`.

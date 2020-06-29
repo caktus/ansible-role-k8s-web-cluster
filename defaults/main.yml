@@ -6,6 +6,10 @@ k8s_kubeconfig: ~/.kube/config
 # <name of context from ~/.kube/config>
 # k8s_context: ''
 
+# k8s_cluster_name will be used in places like a hostname for Papertrail and
+# a display name for NewRelic
+k8s_cluster_name: "{{ k8s_context }}"
+
 k8s_install_ingress_controller: yes
 
 # Let's Encrypt will use this to contact you about expiring
@@ -20,7 +24,7 @@ k8s_echotest_letsencrypt_issuer: 'letsencrypt-staging'
 
 k8s_papertrail_logspout_enabled: "{{ k8s_papertrail_logspout_destination | length > 0 }}"
 k8s_papertrail_logspout_destination: ''  # format: syslog+tls://logsN.papertrailapp.com:XXXXX
-k8s_papertrail_logspout_syslog_hostname: '{% raw %}{{ index .Container.Config.Labels "io.kubernetes.container.name" }}{% endraw %}'
+k8s_papertrail_logspout_syslog_hostname: "{{ k8s_cluster_name }}"
 k8s_papertrail_logspout_syslog_tag: '{% raw %}{{ index .Container.Config.Labels "io.kubernetes.pod.namespace" }}[{{ index .Container.Config.Labels "io.kubernetes.pod.name" }}]{% endraw %}'
 k8s_papertrail_logspout_namespace: 'default'  # This namespace must exist already.
 
@@ -28,7 +32,7 @@ k8s_newrelic_enabled: "{{ k8s_newrelic_license_key | string | length > 0 }}"
 # Found under "the latest supported version"
 # https://docs.newrelic.com/docs/integrations/kubernetes-integration/installation/kubernetes-installation-configuration#install
 k8s_newrelic_kube_state_metrics_version: "v1.7.2"
-k8s_newrelic_cluster_name: "{{ k8s_context }}"
+k8s_newrelic_cluster_name: "{{ k8s_cluster_name }}"
 k8s_newrelic_license_key: ""
 
 # For AWS, IAM users that should have access to the cluster (i.e., those users
