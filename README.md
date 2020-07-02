@@ -168,3 +168,9 @@ secret key for that user. Take note of the `AWS_ACCESS_KEY_ID` and
 
 Copy those 2 variables (and `AWS_DEFAULT_REGION`) into the CI environment variables
 console.
+
+NOTE: If you're using this with [the web app k8s
+role](https://github.com/caktus/ansible-role-django-k8s), be aware that you'll need to
+make sure that `k8s_rollout_after_deploy` is disabled (which is the default), because
+those commands don't currently use the service account user that this role depends on.
+See https://github.com/caktus/ansible-role-django-k8s/issues/25.
