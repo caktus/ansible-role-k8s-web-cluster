@@ -40,3 +40,9 @@ k8s_newrelic_license_key: ""
 # if a user is removed from the list below and the Ansible playbook is re-run.
 # Values should be the IAM usernames (e.g. "johndev") and not anything more complicated.
 k8s_iam_users: []
+
+k8s_ci_create_user: "{{ k8s_ci_repository_arn | length > 0 }}"
+k8s_ci_aws_profile: default
+k8s_ci_username: ci-user
+k8s_ci_repository_arn: "" # format: arn:aws:ecr:<REGION>:<ACCOUNT_NUMBER>:repository/<REPO_NAME>
+k8s_ci_vault_password_arn: "" # format: arn:aws:secretsmanager:<REGION>:<ACCOUNT_NUMBER:secret:<SECRET_IDENTIFIER>

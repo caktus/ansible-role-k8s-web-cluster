@@ -3,6 +3,12 @@
 
 ## Changes
 
+
+### NEXT
+
+* Support creation of an AWS IAM user with limited perms that can be used on CI to push
+  images and deploy.
+
 ### v0.0.5 on Jun 29, 2020
 
 * Introduce `k8s_cluster_name` variable

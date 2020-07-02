@@ -4,6 +4,10 @@
   fail:
     msg: "Set k8s_iam_users to a list of IAM usernames who should have access to manage the cluster"
 
+- when: (k8s_cluster_type != "aws") and k8s_ci_create_user
+  fail:
+    msg: "Setting k8s_ci_create_user is only supported on AWS"
+
 # cert-manager install process adapted from:
 # https://cert-manager.io/docs/installation/kubernetes/#installing-with-regular-manifests
 - name: Create namespace for cert-manager
@@ -148,3 +152,28 @@
     validate:
       fail_on_error: yes
       strict: yes
+
+- name: Create CI user
+  iam:
+    name: "{{ k8s_ci_username }}"
+    state: present
+    iam_type: user
+    profile: "{{ k8s_ci_aws_profile }}"
+  when: k8s_ci_create_user
+  register: ci_user
+
+- debug:
+    msg: |
+      IAM user {{ k8s_ci_username }} has been created.
+      Create an access_key in the AWS IAM console and store them in your CI's environment variables.
+  when: ci_user is changed
+
+- name: Attach inline policy to user
+  iam_policy:
+    iam_type: user
+    iam_name: "{{ k8s_ci_username }}"
+    policy_name: "ECRPush"
+    state: present
+    policy_json: "{{ lookup( 'template', 'aws/ECRPush.json.j2') }}"
+    profile: "{{ k8s_ci_aws_profile }}"
+  when: k8s_ci_create_user
