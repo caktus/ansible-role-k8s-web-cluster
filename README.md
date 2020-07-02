@@ -36,7 +36,7 @@ Development sponsored by [Caktus Consulting Group, LLC](http://www.caktusgroup.c
 # file: deploy/requirements.yaml
 
 - src: https://github.com/caktus/ansible-role-k8s-web-cluster
-  version: 0.0.2
+  version: 0.0.6
   name: caktus.k8s-web-cluster
 ```
 
