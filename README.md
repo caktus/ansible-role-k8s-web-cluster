@@ -10,6 +10,7 @@ Ocean. The configuration includes installing:
 * Let's Encrypt certificate issuer
 * Logspout for Papertrail
 * AWS IAM user with limited permissions for CI deploys
+* For AWS, granting cluster access to IAM users
 
 ## License
 
@@ -61,8 +62,11 @@ Development sponsored by [Caktus Consulting Group, LLC](http://www.caktusgroup.c
 
 k8s_cluster_type: <aws|gcp|azure|digitalocean>
 k8s_context: <name of context from ~/.kube/config>
+k8s_cluster_name: <display name for your cluster>
 k8s_letsencrypt_email: <email to contact about expiring certs>
 k8s_echotest_hostname: <test hostname assigned to your cluster ip, e.g. echotest.caktus-built.com>
+# aws only:
+k8s_iam_users: [list of IAM usernames who should be allowed to manage the cluster]
 ```
 
 4. Run ``deploy.yaml`` playbook:

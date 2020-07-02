@@ -1,4 +1,8 @@
 ---
+# Sanity check so we don't accidentally remove all access to the cluster on AWS:
+- when: (k8s_cluster_type == "aws") and (k8s_iam_users|length == 0)
+  fail:
+    msg: "Set k8s_iam_users to a list of IAM usernames who should have access to manage the cluster"
 
 - when: (k8s_cluster_type != "aws") and k8s_ci_create_user
   fail:
@@ -136,6 +140,18 @@
     # https://docs.newrelic.com/docs/integrations/kubernetes-integration/installation/kubernetes-installation-configuration
     definition: "{{ lookup('template', 'newrelic/newrelic-infrastructure-k8s-latest.yaml') }}"
   tags: [metrics]
+
+- name: Grant access to IAM users if aws
+  when: k8s_cluster_type == "aws"
+  k8s:
+    definition: "{{ lookup('template', 'aws/cluster-auth.yaml') }}"
+    context: "{{ k8s_context }}"
+    kubeconfig: "{{ k8s_kubeconfig }}"
+    state: present
+    wait: yes
+    validate:
+      fail_on_error: yes
+      strict: yes
 
 - name: Create CI user
   iam:
