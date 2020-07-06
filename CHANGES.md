@@ -4,6 +4,11 @@
 ## Changes
 
 
+### v0.0.7 on Jul 6, 2020
+
+* Allow Papertrail memory resources to be configurable
+
+
 ### v0.0.6 on Jul 2, 2020
 
 * Support creation of an AWS IAM user with limited perms that can be used on CI to push

@@ -36,7 +36,7 @@ Development sponsored by [Caktus Consulting Group, LLC](http://www.caktusgroup.c
 # file: deploy/requirements.yaml
 
 - src: https://github.com/caktus/ansible-role-k8s-web-cluster
-  version: 0.0.6
+  version: 0.0.7
   name: caktus.k8s-web-cluster
 ```
 
@@ -51,7 +51,7 @@ Development sponsored by [Caktus Consulting Group, LLC](http://www.caktusgroup.c
     - role: caktus.k8s-web-cluster
 ```
 
-3. Add role vars configuration:
+3. Add role vars configuration (see `defaults/main.yml` for a list of all configurable options):
 
 ```yaml
 
