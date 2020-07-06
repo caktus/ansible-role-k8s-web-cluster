@@ -25,7 +25,7 @@ spec:
         - resources:
             requests:
               cpu: "0.15"
-              memory: "50Mi"
+              memory: '{{ k8s_papertrail_logspout_memory_request }}'
             limits:
               memory: '{{ k8s_papertrail_logspout_memory_limit }}'
           env:
