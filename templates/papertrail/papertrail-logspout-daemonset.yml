@@ -25,8 +25,9 @@ spec:
         - resources:
             requests:
               cpu: "0.15"
+              memory: '{{ k8s_papertrail_logspout_memory_request }}'
             limits:
-              memory: 500Mi
+              memory: '{{ k8s_papertrail_logspout_memory_limit }}'
           env:
             - name: SYSLOG_TAG
               value: '{{ k8s_papertrail_logspout_syslog_tag }}'
