@@ -27,6 +27,7 @@ k8s_papertrail_logspout_destination: ''  # format: syslog+tls://logsN.papertrail
 k8s_papertrail_logspout_syslog_hostname: "{{ k8s_cluster_name }}"
 k8s_papertrail_logspout_syslog_tag: '{% raw %}{{ index .Container.Config.Labels "io.kubernetes.pod.namespace" }}[{{ index .Container.Config.Labels "io.kubernetes.pod.name" }}]{% endraw %}'
 k8s_papertrail_logspout_namespace: 'default'  # This namespace must exist already.
+k8s_papertrail_logspout_memory_limit: 500Mi
 
 k8s_newrelic_enabled: "{{ k8s_newrelic_license_key | string | length > 0 }}"
 # Found under "the latest supported version"
