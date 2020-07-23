@@ -1,3 +1,4 @@
+##jinja2: lstrip_blocks: "True"
 # On AWS, creating this ConfigMap grants access to IAM users.
 apiVersion: v1
 kind: ConfigMap
@@ -12,3 +13,10 @@ data:
       userarn: arn:aws:iam::{{ aws_account_id }}:user/{{ user }}
       username: arn:aws:iam::{{ aws_account_id }}:user/{{ user }}
     {% endfor %}
+  mapRoles: |
+    {% for role in k8s_iam_roles -%}
+    - rolearn: {{ role }}
+      username: system:node:{% raw %}{{EC2PrivateDNSName}}{% endraw %}
+      groups:
+      - system:masters
+    {% endfor -%}
