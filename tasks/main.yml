@@ -127,6 +127,23 @@
   - "https://raw.githubusercontent.com/kubernetes/kube-state-metrics/{{ k8s_newrelic_kube_state_metrics_version }}/examples/standard/deployment.yaml"
   - "https://raw.githubusercontent.com/kubernetes/kube-state-metrics/{{ k8s_newrelic_kube_state_metrics_version }}/examples/standard/service.yaml"
 
+- name: Create namespace for New Relic Infrastructure Agent
+  when: k8s_newrelic_namespace != "default"
+  k8s:
+    context: "{{ k8s_context|mandatory }}"
+    kubeconfig: "{{ k8s_kubeconfig }}"
+    state: "{{ k8s_newrelic_enabled | ternary('present', 'absent') }}"
+    wait: yes
+    validate:
+      fail_on_error: yes
+      strict: yes
+    definition:
+      apiVersion: v1
+      kind: Namespace
+      metadata:
+        name: "{{ k8s_newrelic_namespace }}"
+  tags: [newrelic-infra]
+
 - name: Install New Relic Infrastructure Agent
   k8s:
     context: "{{ k8s_context }}"
