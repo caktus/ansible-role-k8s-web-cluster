@@ -137,9 +137,11 @@
       fail_on_error: yes
       strict: yes
     # Stored locally to convert to template
+    # https://download.newrelic.com/infrastructure_agent/integrations/kubernetes/newrelic-infrastructure-k8s-latest.yaml
+    # Docs:
     # https://docs.newrelic.com/docs/integrations/kubernetes-integration/installation/kubernetes-installation-configuration
     definition: "{{ lookup('template', 'newrelic/newrelic-infrastructure-k8s-latest.yaml') }}"
-  tags: [metrics]
+  tags: [newrelic-infra]
 
 - name: Grant access to IAM users if aws
   when: k8s_cluster_type == "aws"
