@@ -121,11 +121,11 @@
     definition: "{{ lookup('url', item, split_lines=False) }}"
   tags: [metrics]
   with_items:
-  - "https://raw.githubusercontent.com/kubernetes/kube-state-metrics/{{ k8s_newrelic_kube_state_metrics_version }}/kubernetes/kube-state-metrics-cluster-role-binding.yaml"
-  - "https://raw.githubusercontent.com/kubernetes/kube-state-metrics/{{ k8s_newrelic_kube_state_metrics_version }}/kubernetes/kube-state-metrics-cluster-role.yaml"
-  - "https://raw.githubusercontent.com/kubernetes/kube-state-metrics/{{ k8s_newrelic_kube_state_metrics_version }}/kubernetes/kube-state-metrics-service-account.yaml"
-  - "https://raw.githubusercontent.com/kubernetes/kube-state-metrics/{{ k8s_newrelic_kube_state_metrics_version }}/kubernetes/kube-state-metrics-deployment.yaml"
-  - "https://raw.githubusercontent.com/kubernetes/kube-state-metrics/{{ k8s_newrelic_kube_state_metrics_version }}/kubernetes/kube-state-metrics-service.yaml"
+  - "https://raw.githubusercontent.com/kubernetes/kube-state-metrics/{{ k8s_newrelic_kube_state_metrics_version }}/examples/standard/cluster-role-binding.yaml"
+  - "https://raw.githubusercontent.com/kubernetes/kube-state-metrics/{{ k8s_newrelic_kube_state_metrics_version }}/examples/standard/cluster-role.yaml"
+  - "https://raw.githubusercontent.com/kubernetes/kube-state-metrics/{{ k8s_newrelic_kube_state_metrics_version }}/examples/standard/service-account.yaml"
+  - "https://raw.githubusercontent.com/kubernetes/kube-state-metrics/{{ k8s_newrelic_kube_state_metrics_version }}/examples/standard/deployment.yaml"
+  - "https://raw.githubusercontent.com/kubernetes/kube-state-metrics/{{ k8s_newrelic_kube_state_metrics_version }}/examples/standard/service.yaml"
 
 - name: Install New Relic Infrastructure Agent
   k8s:
