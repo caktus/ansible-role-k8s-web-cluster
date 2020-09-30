@@ -174,3 +174,28 @@ role](https://github.com/caktus/ansible-role-django-k8s), be aware that you'll n
 make sure that `k8s_rollout_after_deploy` is disabled (which is the default), because
 those commands don't currently use the service account user that this role depends on.
 See https://github.com/caktus/ansible-role-django-k8s/issues/25.
+
+### Customize Nginx Error Pages
+
+This role will create a service (and deployment) named `nginx-errors` in the
+`ingress-nginx` namespace. That service will run a pod using the image specified in
+`k8s_nginx_errors_image`. This defaults to an [image built
+here](https://github.com/caktus/custom-error-pages), which provides an image that
+returns a customized 503 error page. The main purpose for this is to allow you to turn
+on a maintenance page. In the kubernetes world, a maintenance page is rarely needed but
+there are times where you might want one. For example, if you are upgrading the database
+and just want to turn off web access to the DB for a short time. Since all 503 errors
+will return the custom 503 maintenance page, you could do this:
+
+```bash
+kubectl scale deployment -n <my-namespace> --replicas=0 --all
+```
+
+That would turn off all your apps, and nginx would serve your maintenance page. Then,
+when you restarted things (by setting `--replicas=N`), the maintenance page would go
+away.
+
+If you want to customize the 503 page, or if you want to add custom pages for any other
+nginx error code, you'll need to clone the https://github.com/caktus/custom-error-pages
+repo, create new HTML pages there, and then refer to your image in
+`k8s_nginx_errors_image`.
