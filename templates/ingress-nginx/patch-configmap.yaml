@@ -7,4 +7,5 @@ metadata:
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/part-of: ingress-nginx
 data:
-  use-proxy-protocol: "{% if k8s_cluster_type in ("digitalocean", "aws") %}true{% else %}false{% endif %}"
+  use-proxy-protocol: "{% if k8s_cluster_type in ('digitalocean', 'aws') %}true{% else %}false{% endif %}"
+  custom-http-errors: "{{ k8s_nginx_errors_codes }}"

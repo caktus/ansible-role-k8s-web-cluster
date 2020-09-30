@@ -89,6 +89,7 @@
       strict: yes
     definition: "{{ lookup('template', item) }}"
   with_items:
+    - ingress-nginx/nginx-errors.yaml.j2
     - ingress-nginx/mandatory.yaml
     - ingress-nginx/cloud-generic.yaml
     - ingress-nginx/patch-configmap.yaml

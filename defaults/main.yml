@@ -48,3 +48,6 @@ k8s_ci_aws_profile: default
 k8s_ci_username: ci-user
 k8s_ci_repository_arn: "" # format: arn:aws:ecr:<REGION>:<ACCOUNT_NUMBER>:repository/<REPO_NAME>
 k8s_ci_vault_password_arn: "" # format: arn:aws:secretsmanager:<REGION>:<ACCOUNT_NUMBER:secret:<SECRET_IDENTIFIER>
+
+k8s_nginx_errors_codes: "503" # CSV of error codes to intercept
+k8s_nginx_errors_image: "ghcr.io/caktus/custom-error-pages:latest"
