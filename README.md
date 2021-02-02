@@ -143,47 +143,6 @@ ansible-playbook -l <host/group> echotest.yaml -vv
 ansible-playbook -l <host/group> echotest.yaml --extra-vars "k8s_echotest_state=absent" -vv
 ```
 
-### Adding a limited AWS IAM user for CI deploys
-
-In order to be able to deploy to AWS from CI systems, you'll need to be able to
-authenticate as an IAM user that has the permissions to push to the AWS ECR (Docker
-registry), and possibly need to be able to read a secret from AWS Secrets Manager (the
-`.vault_pass` value). This playbook can create that user for you with the proper
-permissions. You can configure this with the following variables (defaults shown):
-
-```yaml
-k8s_ci_aws_profile: "default" # profile in your ~/.aws/credentials file, which will be used to create the user
-k8s_ci_username: ci-user
-k8s_ci_repository_arn: "" # format: arn:aws:ecr:<REGION>:<ACCOUNT_NUMBER>:repository/<REPO_NAME>
-k8s_ci_vault_password_arn: "" # format: arn:aws:secretsmanager:<REGION>:<ACCOUNT_NUMBER>:secret:<NAME_OF_SECRET>
-```
-
-Only `k8s_ci_repository_arn` is required. The REPO_NAME portion can be found
-[here](https://console.aws.amazon.com/ecr/repositories). The
-`k8s_ci_aws_profile` value needs to be present in your `~/.aws/credentials` file and
-should correspond to an IAM user with sufficient permissions to create a user in the
-same AWS account where your k8s cluster lives. Finally, the `k8s_ci_vault_password_arn`
-is an optional pointer to a single secret in AWS Secrets Manager. The ARN can be found
-by going to this [link](https://console.aws.amazon.com/secretsmanager/home#/listSecrets)
-and then clicking on the secret you're sharing with the user. On some projects, we store
-the Ansible vault password in SecretsManager and then use an AWS CLI command to read the
-secret so other secrets in the repo can be decrypted. This allows the CI user to access
-that command.
-
-After you set those variables and run this role, the IAM user will be created with the
-proper permissions. You'll then need to use the AWS console to create an access key and
-secret key for that user. Take note of the `AWS_ACCESS_KEY_ID` and
-`AWS_SECRET_ACCESS_KEY` values.
-
-Copy those 2 variables (and `AWS_DEFAULT_REGION`) into the CI environment variables
-console.
-
-NOTE: If you're using this with [the web app k8s
-role](https://github.com/caktus/ansible-role-django-k8s), be aware that you'll need to
-make sure that `k8s_rollout_after_deploy` is disabled (which is the default), because
-those commands don't currently use the service account user that this role depends on.
-See https://github.com/caktus/ansible-role-django-k8s/issues/25.
-
 
 ### Helm charts
 
