@@ -45,7 +45,7 @@ metadata:
   namespace: echoserver
   annotations:
     kubernetes.io/ingress.class: "nginx"
-    certmanager.k8s.io/cluster-issuer: "{{ k8s_echotest_letsencrypt_issuer }}"
+    cert-manager.io/cluster-issuer:  "{{ k8s_echotest_letsencrypt_issuer }}"
 spec:
   tls:
   - hosts:

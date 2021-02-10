@@ -12,6 +12,9 @@ k8s_cluster_name: "{{ k8s_context }}"
 
 k8s_install_ingress_controller: yes
 
+ingress_controller_namespace: ingress-nginx
+cert_manager_namespace: cert-manager
+
 # Let's Encrypt will use this to contact you about expiring
 # certificates, and issues related to your account.
 #k8s_letsencrypt_email: ''
