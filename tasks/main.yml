@@ -47,8 +47,8 @@
     context: "{{ k8s_context|mandatory }}"
     kubeconfig: "{{ k8s_kubeconfig }}"
     wait: yes
-    # FIXME: cert-manager.yaml doesn't validate, so this is disabled for now.
-    # Maybe the next version will validate?
+    # cert-manager's custom resource definitions don't validate,
+    # so this is disabled for now.
     # validate:
     #   fail_on_error: yes
     #   strict: yes
