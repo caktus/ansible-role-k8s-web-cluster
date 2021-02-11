@@ -3,6 +3,11 @@ k8s_kubeconfig: ~/.kube/config
 # <aws|gcp|azure|digitalocean>
 # k8s_cluster_type: ''
 
+# <nlb|elb>
+# Important! Do not edit this after creating your service. Delete the
+# nginx-ingress namespace and re-run this role if you need to change this.
+k8s_aws_load_balancer_type: nlb
+
 # <name of context from ~/.kube/config>
 # k8s_context: ''
 
