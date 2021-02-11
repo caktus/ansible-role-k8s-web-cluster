@@ -4,6 +4,17 @@
 ## Changes
 
 
+### v1.0.0 on TBD
+
+**BACKWARDS INCOMPATIBLE CHANGES:**
+
+* Use Helm to install ingress-nginx and cert-manager
+
+**Other Changes:**
+
+* Move Papertrail and New Relic to caktus.k8s-hosting-services
+
+
 ### v0.0.7 on Jul 6, 2020
 
 * Allow Papertrail memory resources to be configurable

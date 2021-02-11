@@ -5,10 +5,9 @@ An Ansible role to help configure Kubernetes clusters for web apps.
 Supported cloud providers include GCP (GKE), AWS (EKS), Azure (AKS), and Digital
 Ocean. The configuration includes installing:
 
-* Nginx Ingress Controller
-* Certificate manager (https://cert-manager.io/docs/) (https://github.com/jetstack/cert-manager)
-* Let's Encrypt certificate issuer
-* Logspout for Papertrail
+* Nginx Ingress Controller [Helm Chart](https://github.com/kubernetes/ingress-nginx/tree/master/charts/ingress-nginx)
+* Certificate manager [Helm Chart](https://github.com/jetstack/cert-manager/tree/master/deploy/charts/cert-manager)
+* Let's Encrypt certificate issuers (staging and production)
 * AWS IAM user with limited permissions for CI deploys
 * For AWS, granting cluster access to IAM users
 
@@ -65,8 +64,12 @@ k8s_context: <name of context from ~/.kube/config>
 k8s_cluster_name: <display name for your cluster>
 k8s_letsencrypt_email: <email to contact about expiring certs>
 k8s_echotest_hostname: <test hostname assigned to your cluster ip, e.g. echotest.caktus-built.com>
-# aws only:
-k8s_iam_users: [list of IAM usernames who should be allowed to manage the cluster]
+# AWS only:
+# Use the newer load balancer type (NLB). DO NOT edit k8s_aws_load_balancer_type after
+# creating your Service.
+k8s_aws_load_balancer_type: nlb
+# List of IAM usernames who should be allowed to manage the cluster
+k8s_iam_users: []
 ```
 
 4. Run ``deploy.yaml`` playbook:
