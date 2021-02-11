@@ -6,7 +6,7 @@ k8s_kubeconfig: ~/.kube/config
 # <nlb|elb>
 # Important! Do not edit this after creating your service. Delete the
 # nginx-ingress namespace and re-run this role if you need to change this.
-k8s_aws_load_balancer_type: nlb
+k8s_aws_load_balancer_type: elb
 
 # <name of context from ~/.kube/config>
 # k8s_context: ''
@@ -15,10 +15,17 @@ k8s_aws_load_balancer_type: nlb
 # a display name for NewRelic
 k8s_cluster_name: "{{ k8s_context }}"
 
+# ingress-nginx controller settings
 k8s_install_ingress_controller: yes
+# https://github.com/kubernetes/ingress-nginx/releases
+k8s_ingress_nginx_chart_version: "3.23.0"
+k8s_ingress_nginx_controller_namespace: ingress-nginx
 
-ingress_controller_namespace: ingress-nginx
-cert_manager_namespace: cert-manager
+# cert-manager settings
+k8s_install_cert_manager: yes
+# https://github.com/jetstack/cert-manager/releases
+k8s_cert_manager_chart_version: "v1.2.0"
+k8s_cert_manager_namespace: cert-manager
 
 # Let's Encrypt will use this to contact you about expiring
 # certificates, and issues related to your account.

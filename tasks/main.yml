@@ -15,31 +15,32 @@
     kind: Namespace
     state: present
   loop:
-    - "{{ ingress_controller_namespace }}"
-    - "{{ cert_manager_namespace }}"
+    - "{{ k8s_ingress_nginx_controller_namespace }}"
+    - "{{ k8s_cert_manager_namespace }}"
 
 - name: Add ingress-nginx Helm chart
   community.kubernetes.helm:
     chart_repo_url: "https://kubernetes.github.io/ingress-nginx"
     chart_ref: ingress-nginx
     # https://github.com/kubernetes/ingress-nginx/tags
-    chart_version: "3.23.0"
+    chart_version: "{{ k8s_ingress_nginx_chart_version }}"
     release_name: ingress-nginx
-    release_namespace: "{{ ingress_controller_namespace }}"
+    release_namespace: "{{ k8s_ingress_nginx_controller_namespace }}"
     release_values: "{{ lookup('template', 'ingress-nginx/chart-values-%s.yaml' % k8s_cluster_type) | from_yaml }}"
     wait: yes
+  when: k8s_install_ingress_controller
 
 - name: Add cert-manager Helm chart
   community.kubernetes.helm:
     chart_repo_url: "https://charts.jetstack.io"
     chart_ref: cert-manager
-    # https://cert-manager.io/docs/release-notes/
-    chart_version: "v1.1.0"
+    chart_version: "{{ k8s_cert_manager_chart_version }}"
     release_name: cert-manager
-    release_namespace: "{{ cert_manager_namespace }}"
+    release_namespace: "{{ k8s_cert_manager_namespace }}"
     release_values:
       installCRDs: "true"
     wait: yes
+  when: k8s_install_cert_manager
 
 - name: Deploy Let's Encrypt issuers
   k8s:
@@ -52,6 +53,7 @@
     #   fail_on_error: yes
     #   strict: yes
     definition: "{{ lookup('template', 'letsencrypt/issuers.yaml') }}"
+  when: k8s_install_cert_manager
 
 - name: Deploy Papertrail logspout
   k8s:
