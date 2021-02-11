@@ -26,6 +26,8 @@
     chart_version: "3.23.0"
     release_name: ingress-nginx
     release_namespace: "{{ ingress_controller_namespace }}"
+    release_values: "{{ lookup('template', 'ingress-nginx/chart-values-%s.yaml' % k8s_cluster_type) | from_yaml }}"
+    wait: yes
 
 - name: Add cert-manager Helm chart
   community.kubernetes.helm:
@@ -37,6 +39,7 @@
     release_namespace: "{{ cert_manager_namespace }}"
     release_values:
       installCRDs: "true"
+    wait: yes
 
 - name: Deploy Let's Encrypt issuers
   k8s:

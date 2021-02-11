@@ -1,0 +1,8 @@
+controller:
+  service:
+    annotations:
+      # Enable PROXY protocol on the load balancer
+      service.beta.kubernetes.io/do-loadbalancer-enable-proxy-protocol: "true"
+  config:
+    # Enable PROXY protocol in Nginx
+    use-proxy-protocol: "true"

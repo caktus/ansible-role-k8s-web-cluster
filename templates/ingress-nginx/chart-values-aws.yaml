@@ -1,0 +1,12 @@
+controller:
+  service:
+    annotations:
+      # Enable PROXY protocol
+      service.beta.kubernetes.io/aws-load-balancer-proxy-protocol: "*"
+      # Ensure the ELB idle timeout is less than nginx keep-alive timeout. By default,
+      # NGINX keep-alive is set to 75s. If using WebSockets, the value will need to be
+      # increased to '3600' to avoid any potential issues.
+      service.beta.kubernetes.io/aws-load-balancer-connection-idle-timeout: "60"
+  config:
+    # Enable PROXY protocol in Nginx
+    use-proxy-protocol: "true"
