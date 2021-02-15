@@ -194,3 +194,8 @@ ingress-nginx   ingress-nginx   1               2021-02-11 15:59:27.008281 -0500
 NAME            NAMESPACE       REVISION        UPDATED                                 STATUS          CHART                   APP VERSION
 cert-manager    cert-manager    2               2021-02-11 15:41:47.024147 -0500 EST    deployed        cert-manager-v1.2.0     v1.2.0 
 ```
+
+[helm
+upgrade](https://helm.sh/docs/intro/using_helm/#helm-upgrade-and-helm-rollback-upgrading-a-release-and-recovering-on-failure)
+has not been tested yet, but the hope is that the helm charts will support
+upgrades.
