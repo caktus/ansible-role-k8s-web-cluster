@@ -23,6 +23,7 @@ Development sponsored by [Caktus Consulting Group, LLC](http://www.caktusgroup.c
 ## Requirements
 
 * ``pip install openshift kubernetes-validate``
+* [helm](https://helm.sh/docs/intro/install/)
 
 
 ## Installation
