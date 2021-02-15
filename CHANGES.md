@@ -25,7 +25,7 @@ and re-deploy this role.
 * Move Papertrail and New Relic to
   [caktus.k8s-hosting-services](https://github.com/caktus/ansible-role-k8s-hosting-services).
   The existing deployments will not be automatically removed, but they are no
-  longer mangaged from this role.
+  longer managed from this role.
 
 
 ### v0.0.7 on Jul 6, 2020
