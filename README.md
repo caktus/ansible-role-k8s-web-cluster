@@ -178,3 +178,19 @@ role](https://github.com/caktus/ansible-role-django-k8s), be aware that you'll n
 make sure that `k8s_rollout_after_deploy` is disabled (which is the default), because
 those commands don't currently use the service account user that this role depends on.
 See https://github.com/caktus/ansible-role-django-k8s/issues/25.
+
+
+### Helm charts
+
+After installing the `ingress-nginx` and `cert-manager` Helm charts, you can
+view them with `helm list`:
+
+```
+❯ helm -n ingress-nginx list
+NAME            NAMESPACE       REVISION        UPDATED                                 STATUS          CHART                   APP VERSION
+ingress-nginx   ingress-nginx   1               2021-02-11 15:59:27.008281 -0500 EST    deployed        ingress-nginx-3.23.0    0.44.0 
+
+❯ helm -n cert-manager list
+NAME            NAMESPACE       REVISION        UPDATED                                 STATUS          CHART                   APP VERSION
+cert-manager    cert-manager    2               2021-02-11 15:41:47.024147 -0500 EST    deployed        cert-manager-v1.2.0     v1.2.0 
+```
