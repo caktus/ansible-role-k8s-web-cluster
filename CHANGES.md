@@ -8,11 +8,24 @@
 
 **BACKWARDS INCOMPATIBLE CHANGES:**
 
-* Use Helm to install ingress-nginx and cert-manager
+* Use Helm to install `ingress-nginx`
+  * `ingress-nginx` controller upgraded from `0.26.1` to `0.44.0` (via `3.23.0`
+    helm chart release)
+* Use Helm to install `cert-manager`
+  * `cert-manager` controller upgraded from `v0.10.1` to `v1.2.0`
+  * The accompanying
+    [caktus.django-k8s](https://github.com/caktus/ansible-role-django-k8s/) role
+    must also be updated to >`v0.0.11` to restore certificate validation.
+
+To upgrade, manually delete the `ingress-nginx` and `cert-manager` namespaces
+and re-deploy this role.
 
 **Other Changes:**
 
-* Move Papertrail and New Relic to caktus.k8s-hosting-services
+* Move Papertrail and New Relic to
+  [caktus.k8s-hosting-services](https://github.com/caktus/ansible-role-k8s-hosting-services).
+  The existing deployments will not be automatically removed, but they are no
+  longer mangaged from this role.
 
 
 ### v0.0.7 on Jul 6, 2020
