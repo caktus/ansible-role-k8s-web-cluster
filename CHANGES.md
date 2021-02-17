@@ -1,5 +1,6 @@
 # caktus.k8s-web-cluster
 
+This project uses [semantic versioning](https://semver.org/).
 
 ## Changes
 
