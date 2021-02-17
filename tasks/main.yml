@@ -8,35 +8,43 @@
   fail:
     msg: "Setting k8s_ci_create_user is only supported on AWS"
 
-- name: Remove old cert-manager
+- name: Remove cert-manager
   k8s:
     context: "{{ k8s_context|mandatory }}"
     kubeconfig: "{{ k8s_kubeconfig }}"
     wait: yes
     definition: "{{ lookup('template', 'cert-manager.yaml') }}"
     state: absent
-  when: k8s_cert_manager_purge
+  when: k8s_purge_cert_manager
 
-- name: Remove old ingress-nginx
+- name: Remove ingress-nginx
   k8s:
     context: "{{ k8s_context|mandatory }}"
     kubeconfig: "{{ k8s_kubeconfig }}"
     wait: yes
     definition: "{{ lookup('template', 'ingress-nginx/mandatory.yaml') }}"
     state: absent
-  when: k8s_ingress_nginx_purge
+  when: k8s_purge_ingress_controller
 
-- name: Create namespaces
+- name: Create ingress-nginx namespace
   community.kubernetes.k8s:
     context: "{{ k8s_context|mandatory }}"
     kubeconfig: "{{ k8s_kubeconfig }}"
-    name: "{{ item }}"
+    name: "{{ k8s_ingress_nginx_namespace }}"
     api_version: v1
     kind: Namespace
     state: present
-  loop:
-    - "{{ k8s_ingress_nginx_namespace }}"
-    - "{{ k8s_cert_manager_namespace }}"
+  when: k8s_install_ingress_controller
+
+- name: Create cert-manager namespace
+  community.kubernetes.k8s:
+    context: "{{ k8s_context|mandatory }}"
+    kubeconfig: "{{ k8s_kubeconfig }}"
+    name: "{{ k8s_cert_manager_namespace }}"
+    api_version: v1
+    kind: Namespace
+    state: present
+  when: k8s_install_cert_manager
 
 - name: Add ingress-nginx Helm chart
   community.kubernetes.helm:
@@ -47,7 +55,7 @@
     # https://github.com/kubernetes/ingress-nginx/tags
     chart_version: "{{ k8s_ingress_nginx_chart_version }}"
     release_name: ingress-nginx
-    release_namespace: "{{ k8s_ingress_nginx_controller_namespace }}"
+    release_namespace: "{{ k8s_ingress_nginx_namespace }}"
     release_values: "{{ lookup('template', 'ingress-nginx/chart-values-%s.yaml' % k8s_cluster_type) | from_yaml }}"
     wait: yes
   when: k8s_install_ingress_controller

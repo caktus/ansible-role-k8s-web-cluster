@@ -22,11 +22,12 @@ Upgrade instructions:
 1. First, purge the old cert-manager and create a new ingress controller in a new namespace:
 
    ```
-   # your variables file (e.g., group_vars/all.yaml)
+   # Install new ingress controller, but don't delete the old one yet
    k8s_install_ingress_controller: yes
    k8s_ingress_nginx_namespace: ingress-nginx-temp
-   k8s_purge_ingress_controller: yes
+   k8s_purge_ingress_controller: no
 
+   # Don't install a new cert-manager, but do delete the old one
    k8s_install_cert_manager: no
    k8s_purge_cert_manager: yes
    ```
@@ -52,12 +53,17 @@ Upgrade instructions:
    of this approach.
 
 4. Next, add `k8s_purge_ingress_controller: yes` to your variables file and re-run `deploy.yaml`.
-   Note that you will have both `k8s_install_ingress_controller: yes` and
-   ``k8s_purge_ingress_controller: yes`, however, the former refers to the new namespace and the
+   Note that you will now have both `k8s_install_ingress_controller: yes` and
+   `k8s_purge_ingress_controller: yes`, however, the former refers to the new namespace and the
    latter refers only to the old namespace. This should clear out the old ingress controller.
 
+   Note, you may need to run this a few times if Ansible times out attempting to delete everything
+   the first time.
+
 5. If you want to switch everything to use the original `ingress-nginx` namespace again, make the
-   change in your variables file and re-run `deploy.yaml` with your final configuration:
+   change in your variables file and re-run `deploy.yaml` with your final configuration.
+
+   Otherwise, simply set `k8s_install_cert_manager: yes` and do not change the namespace.
 
    ```
    # your variables file (e.g., group_vars/all.yaml)
@@ -67,15 +73,29 @@ Upgrade instructions:
    k8s_install_cert_manager: yes
    ```
 
-   Make sure to remove the two `k8s_purge` variables as they are no longer needed, and they will
-   be removed in a future release.
+   **Make sure to remove the two `k8s_purge_*` variables as they are no longer needed and will
+   be removed in a future release.**
 
-6. If you elected to switch namespaces again, change the DNS to the new service address as in step 3.
+6. If you elected to switch namespaces again:
+
+   * Change the DNS to the new service address as in step 3 and wait for traffic to stop
+     going to the temporary ingress controller.
+   * Remove the `ingress-nginx-temp` namespace as follows:
+
+     ```
+     helm -n ingress-nginx-temp uninstall ingress-nginx
+     kubectl delete ns ingress-nginx-temp
+     ```
 
 7. Test that cert-manager is working properly by deploying a new echotest pod as described in the README.
 
 8. Update any projects that deploy to the cluster to use the corresponding 1.0 release of
    [ansible-role-django-k8s](https://github.com/caktus/ansible-role-django-k8s).
+
+**Please note that the `k8s_purge_*` variables are intended only for removing the previously-installed
+versions of these resources.** If you need to remove the newly installed cert-manager or ingress-nginx
+for any reason, you should use the `helm uninstall` method described above.
+
 
 **Other Changes:**
 
