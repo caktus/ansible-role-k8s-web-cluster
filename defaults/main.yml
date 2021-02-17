@@ -14,7 +14,7 @@ k8s_aws_load_balancer_type: nlb
 # https://www.digitalocean.com/docs/kubernetes/how-to/configure-load-balancers/#accessing-by-hostname-annotation
 # Since cert-manager would otherwise be broken without this set, PROXY protocol will only
 # be enabled for Digital Ocean if this variable is set to a non-empty string.
-k8s_digitalocean_loadbalancer_hostname: ""
+k8s_digitalocean_load_balancer_hostname: ""
 
 # <name of context from ~/.kube/config>
 # k8s_context: ''
