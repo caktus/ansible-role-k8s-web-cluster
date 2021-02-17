@@ -16,7 +16,7 @@ This project uses [semantic versioning](https://semver.org/).
   * `cert-manager` controller upgraded from `v0.10.1` to `v1.2.0`
   * The accompanying
     [caktus.django-k8s](https://github.com/caktus/ansible-role-django-k8s/) role
-    must also be updated to >`v0.0.11` to restore certificate validation.
+    must also be updated to >`v0.0.11` to restore certificate validation. 
 * You must follow the [Digital Ocean instructions](https://www.digitalocean.com/docs/kubernetes/how-to/configure-load-balancers/#accessing-by-hostname-annotation) and set a hostname via `k8s_digitalocean_loadbalancer_hostname` to keep PROXY protocol enabled on Digital Ocean (required to see real client IP addresses).
 
 Upgrade instructions:
@@ -104,7 +104,9 @@ for any reason, you should use the `helm uninstall` method described above.
 * Move Papertrail and New Relic to
   [caktus.k8s-hosting-services](https://github.com/caktus/ansible-role-k8s-hosting-services).
   The existing deployments will not be automatically removed, but they are no
-  longer managed from this role.
+  longer managed from this role. To take advantage of future changes to those
+  deployments, add the `caktus.k8s-hosting-services` role to your
+  requirements.yaml file
 * Retire `k8s_cluster_name` variable.
 
 
