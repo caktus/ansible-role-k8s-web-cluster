@@ -104,6 +104,7 @@ for any reason, you should use the `helm uninstall` method described above.
   [caktus.k8s-hosting-services](https://github.com/caktus/ansible-role-k8s-hosting-services).
   The existing deployments will not be automatically removed, but they are no
   longer managed from this role.
+* Retire `k8s_cluster_name` variable.
 
 
 ### v0.0.7 on Jul 6, 2020
