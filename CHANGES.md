@@ -16,6 +16,7 @@
   * The accompanying
     [caktus.django-k8s](https://github.com/caktus/ansible-role-django-k8s/) role
     must also be updated to >`v0.0.11` to restore certificate validation.
+* You must follow the [Digital Ocean instructions](https://www.digitalocean.com/docs/kubernetes/how-to/configure-load-balancers/#accessing-by-hostname-annotation) and set a hostname via `k8s_digitalocean_loadbalancer_hostname` to keep PROXY protocol enabled on Digital Ocean (required to see real client IP addresses).
 
 Upgrade instructions:
 

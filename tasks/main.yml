@@ -56,7 +56,7 @@
     chart_version: "{{ k8s_ingress_nginx_chart_version }}"
     release_name: ingress-nginx
     release_namespace: "{{ k8s_ingress_nginx_namespace }}"
-    release_values: "{{ lookup('template', 'ingress-nginx/chart-values-%s.yaml' % k8s_cluster_type) | from_yaml }}"
+    release_values: "{{ (lookup('template', 'ingress-nginx/chart-values-%s.yaml' % k8s_cluster_type) | from_yaml) or omit }}"
     wait: yes
   when: k8s_install_ingress_controller
 

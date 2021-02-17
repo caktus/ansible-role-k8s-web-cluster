@@ -7,7 +7,14 @@ k8s_kubeconfig: ~/.kube/config
 # nginx-ingress namespace and re-run this role if you really need to change the
 # AWS load balancer type.
 # <nlb|elb>
-k8s_aws_load_balancer_type: elb
+k8s_aws_load_balancer_type: nlb
+
+# On Digital Ocean, for pods to be able to access the cluster, you must set a DNS
+# hostname and point it to the Digital Ocean load balancer IP. See:
+# https://www.digitalocean.com/docs/kubernetes/how-to/configure-load-balancers/#accessing-by-hostname-annotation
+# Since cert-manager would otherwise be broken without this set, PROXY protocol will only
+# be enabled for Digital Ocean if this variable is set to a non-empty string.
+k8s_digitalocean_loadbalancer_hostname: ""
 
 # <name of context from ~/.kube/config>
 # k8s_context: ''
