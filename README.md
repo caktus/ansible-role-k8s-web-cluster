@@ -64,6 +64,12 @@ k8s_cluster_type: <aws|gcp|azure|digitalocean>
 k8s_context: <name of context from ~/.kube/config>
 k8s_letsencrypt_email: <email to contact about expiring certs>
 k8s_echotest_hostname: <test hostname assigned to your cluster ip, e.g. echotest.caktus-built.com>
+# Pin ingress-nginx and cert-manager to current versions so future upgrades of this
+# role will not upgrade these charts without your intervention:
+# https://github.com/kubernetes/ingress-nginx/releases
+k8s_ingress_nginx_chart_version: "3.23.0"
+# https://github.com/jetstack/cert-manager/releases
+k8s_cert_manager_chart_version: "v1.2.0"
 # AWS only:
 # Use the newer load balancer type (NLB). DO NOT edit k8s_aws_load_balancer_type after
 # creating your Service.
