@@ -12,17 +12,25 @@ k8s_aws_load_balancer_type: elb
 # <name of context from ~/.kube/config>
 # k8s_context: ''
 
+
 # ingress-nginx controller settings
 k8s_install_ingress_controller: yes
+# Temporary hook to allow purging pre-helm resources
+# TODO: Remove in 1.1 (along with ingress-nginx/mandatory.yaml)
+k8s_purge_ingress_controller: no
 # https://github.com/kubernetes/ingress-nginx/releases
 k8s_ingress_nginx_chart_version: "3.23.0"
-k8s_ingress_nginx_controller_namespace: ingress-nginx
+k8s_ingress_nginx_namespace: ingress-nginx
 
 # cert-manager settings
 k8s_install_cert_manager: yes
+# Temporary hook to allow purging pre-helm resources
+# TODO: Remove in 1.1 (along with cert-manager.yaml)
+k8s_purge_cert_manager: no
 # https://github.com/jetstack/cert-manager/releases
 k8s_cert_manager_chart_version: "v1.2.0"
 k8s_cert_manager_namespace: cert-manager
+
 
 # Let's Encrypt will use this to contact you about expiring
 # certificates, and issues related to your account.

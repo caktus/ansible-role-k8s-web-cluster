@@ -8,6 +8,24 @@
   fail:
     msg: "Setting k8s_ci_create_user is only supported on AWS"
 
+- name: Remove old cert-manager
+  k8s:
+    context: "{{ k8s_context|mandatory }}"
+    kubeconfig: "{{ k8s_kubeconfig }}"
+    wait: yes
+    definition: "{{ lookup('template', 'cert-manager.yaml') }}"
+    state: absent
+  when: k8s_cert_manager_purge
+
+- name: Remove old ingress-nginx
+  k8s:
+    context: "{{ k8s_context|mandatory }}"
+    kubeconfig: "{{ k8s_kubeconfig }}"
+    wait: yes
+    definition: "{{ lookup('template', 'ingress-nginx/mandatory.yaml') }}"
+    state: absent
+  when: k8s_ingress_nginx_purge
+
 - name: Create namespaces
   community.kubernetes.k8s:
     context: "{{ k8s_context|mandatory }}"
@@ -17,7 +35,7 @@
     kind: Namespace
     state: present
   loop:
-    - "{{ k8s_ingress_nginx_controller_namespace }}"
+    - "{{ k8s_ingress_nginx_namespace }}"
     - "{{ k8s_cert_manager_namespace }}"
 
 - name: Add ingress-nginx Helm chart
