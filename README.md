@@ -5,10 +5,9 @@ An Ansible role to help configure Kubernetes clusters for web apps.
 Supported cloud providers include GCP (GKE), AWS (EKS), Azure (AKS), and Digital
 Ocean. The configuration includes installing:
 
-* Nginx Ingress Controller
-* Certificate manager (https://cert-manager.io/docs/) (https://github.com/jetstack/cert-manager)
-* Let's Encrypt certificate issuer
-* Logspout for Papertrail
+* Nginx Ingress Controller [Helm Chart](https://github.com/kubernetes/ingress-nginx/tree/master/charts/ingress-nginx)
+* Certificate manager [Helm Chart](https://github.com/jetstack/cert-manager/tree/master/deploy/charts/cert-manager)
+* Let's Encrypt certificate issuers (staging and production)
 * AWS IAM user with limited permissions for CI deploys
 * For AWS, granting cluster access to IAM users
 
@@ -24,6 +23,7 @@ Development sponsored by [Caktus Consulting Group, LLC](http://www.caktusgroup.c
 ## Requirements
 
 * ``pip install openshift kubernetes-validate``
+* [helm](https://helm.sh/docs/intro/install/)
 
 
 ## Installation
@@ -36,7 +36,7 @@ Development sponsored by [Caktus Consulting Group, LLC](http://www.caktusgroup.c
 # file: deploy/requirements.yaml
 
 - src: https://github.com/caktus/ansible-role-k8s-web-cluster
-  version: 0.0.7
+  version: 1.0.0
   name: caktus.k8s-web-cluster
 ```
 
@@ -62,11 +62,20 @@ Development sponsored by [Caktus Consulting Group, LLC](http://www.caktusgroup.c
 
 k8s_cluster_type: <aws|gcp|azure|digitalocean>
 k8s_context: <name of context from ~/.kube/config>
-k8s_cluster_name: <display name for your cluster>
 k8s_letsencrypt_email: <email to contact about expiring certs>
 k8s_echotest_hostname: <test hostname assigned to your cluster ip, e.g. echotest.caktus-built.com>
-# aws only:
-k8s_iam_users: [list of IAM usernames who should be allowed to manage the cluster]
+# Pin ingress-nginx and cert-manager to current versions so future upgrades of this
+# role will not upgrade these charts without your intervention:
+# https://github.com/kubernetes/ingress-nginx/releases
+k8s_ingress_nginx_chart_version: "3.23.0"
+# https://github.com/jetstack/cert-manager/releases
+k8s_cert_manager_chart_version: "v1.2.0"
+# AWS only:
+# Use the newer load balancer type (NLB). DO NOT edit k8s_aws_load_balancer_type after
+# creating your Service.
+k8s_aws_load_balancer_type: nlb
+# List of IAM usernames who should be allowed to manage the cluster
+k8s_iam_users: []
 ```
 
 4. Run ``deploy.yaml`` playbook:
@@ -174,3 +183,24 @@ role](https://github.com/caktus/ansible-role-django-k8s), be aware that you'll n
 make sure that `k8s_rollout_after_deploy` is disabled (which is the default), because
 those commands don't currently use the service account user that this role depends on.
 See https://github.com/caktus/ansible-role-django-k8s/issues/25.
+
+
+### Helm charts
+
+After installing the `ingress-nginx` and `cert-manager` Helm charts, you can
+view them with `helm list`:
+
+```
+❯ helm -n ingress-nginx list
+NAME            NAMESPACE       REVISION        UPDATED                                 STATUS          CHART                   APP VERSION
+ingress-nginx   ingress-nginx   1               2021-02-11 15:59:27.008281 -0500 EST    deployed        ingress-nginx-3.23.0    0.44.0 
+
+❯ helm -n cert-manager list
+NAME            NAMESPACE       REVISION        UPDATED                                 STATUS          CHART                   APP VERSION
+cert-manager    cert-manager    2               2021-02-11 15:41:47.024147 -0500 EST    deployed        cert-manager-v1.2.0     v1.2.0 
+```
+
+[helm
+upgrade](https://helm.sh/docs/intro/using_helm/#helm-upgrade-and-helm-rollback-upgrading-a-release-and-recovering-on-failure)
+has not been tested yet, but the hope is that the helm charts will support
+upgrades.

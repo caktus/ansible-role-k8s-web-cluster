@@ -1,0 +1,17 @@
+# Reference for values accepted by the ingress-nginx chart:
+# https://github.com/kubernetes/ingress-nginx/blob/master/charts/ingress-nginx/values.yaml
+controller:
+  service:
+    annotations:
+      # Enable PROXY protocol on the load balancer
+      service.beta.kubernetes.io/do-loadbalancer-enable-proxy-protocol: "{% if k8s_digitalocean_loadbalancer_hostname %}true{% else %}false{% endif %}"
+      # Digital Ocean load balancers must be accessed by hostname if PROXY protocol is enabled, since
+      # cert-manager verifications requires pods to be able to reach the cluster via the LoadBalancer
+      # address. See:
+      # https://www.digitalocean.com/docs/kubernetes/how-to/configure-load-balancers/#accessing-by-hostname-annotation
+{% if k8s_digitalocean_loadbalancer_hostname %}
+      service.beta.kubernetes.io/do-loadbalancer-hostname: "{{ k8s_digitalocean_loadbalancer_hostname }}"
+{% endif %}
+  config:
+    # Enable PROXY protocol in Nginx
+    use-proxy-protocol: "{% if k8s_digitalocean_loadbalancer_hostname %}true{% else %}false{% endif %}"

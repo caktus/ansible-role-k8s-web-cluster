@@ -8,138 +8,84 @@
   fail:
     msg: "Setting k8s_ci_create_user is only supported on AWS"
 
-# cert-manager install process adapted from:
-# https://cert-manager.io/docs/installation/kubernetes/#installing-with-regular-manifests
-- name: Create namespace for cert-manager
+- name: Remove cert-manager
   k8s:
     context: "{{ k8s_context|mandatory }}"
     kubeconfig: "{{ k8s_kubeconfig }}"
     wait: yes
-    validate:
-      fail_on_error: yes
-      strict: yes
-    definition:
-      apiVersion: v1
-      kind: Namespace
-      metadata:
-        name: cert-manager
-  register: cert_manager
+    definition: "{{ lookup('template', 'cert-manager.yaml') }}"
+    state: absent
+  when: k8s_purge_cert_manager
 
-- name: Temporarily disable validation for cert-manager namespace
+- name: Remove ingress-nginx
   k8s:
     context: "{{ k8s_context|mandatory }}"
     kubeconfig: "{{ k8s_kubeconfig }}"
     wait: yes
-    wait_timeout: "{{ k8s_wait_timeout }}"
-    validate:
-      fail_on_error: yes
-      strict: yes
-    definition:
-      apiVersion: v1
-      kind: Namespace
-      metadata:
-        name: cert-manager
-        labels:
-          certmanager.k8s.io/disable-validation: "true"
+    definition: "{{ lookup('template', 'ingress-nginx/mandatory.yaml') }}"
+    state: absent
+  when: k8s_purge_ingress_controller
 
-- name: Deploy cert-manager and Let's Encrypt
+- name: Create ingress-nginx namespace
+  community.kubernetes.k8s:
+    context: "{{ k8s_context|mandatory }}"
+    kubeconfig: "{{ k8s_kubeconfig }}"
+    name: "{{ k8s_ingress_nginx_namespace }}"
+    api_version: v1
+    kind: Namespace
+    state: present
+  when: k8s_install_ingress_controller
+
+- name: Create cert-manager namespace
+  community.kubernetes.k8s:
+    context: "{{ k8s_context|mandatory }}"
+    kubeconfig: "{{ k8s_kubeconfig }}"
+    name: "{{ k8s_cert_manager_namespace }}"
+    api_version: v1
+    kind: Namespace
+    state: present
+  when: k8s_install_cert_manager
+
+- name: Add ingress-nginx Helm chart
+  community.kubernetes.helm:
+    context: "{{ k8s_context|mandatory }}"
+    kubeconfig: "{{ k8s_kubeconfig }}"
+    chart_repo_url: "https://kubernetes.github.io/ingress-nginx"
+    chart_ref: ingress-nginx
+    # https://github.com/kubernetes/ingress-nginx/tags
+    chart_version: "{{ k8s_ingress_nginx_chart_version }}"
+    release_name: ingress-nginx
+    release_namespace: "{{ k8s_ingress_nginx_namespace }}"
+    release_values: "{{ (lookup('template', 'ingress-nginx/chart-values-%s.yaml' % k8s_cluster_type) | from_yaml) or omit }}"
+    wait: yes
+  when: k8s_install_ingress_controller
+
+- name: Add cert-manager Helm chart
+  community.kubernetes.helm:
+    context: "{{ k8s_context|mandatory }}"
+    kubeconfig: "{{ k8s_kubeconfig }}"
+    chart_repo_url: "https://charts.jetstack.io"
+    chart_ref: cert-manager
+    chart_version: "{{ k8s_cert_manager_chart_version }}"
+    release_name: cert-manager
+    release_namespace: "{{ k8s_cert_manager_namespace }}"
+    release_values:
+      installCRDs: "true"
+    wait: yes
+  when: k8s_install_cert_manager
+
+- name: Deploy Let's Encrypt issuers
   k8s:
     context: "{{ k8s_context|mandatory }}"
     kubeconfig: "{{ k8s_kubeconfig }}"
     wait: yes
-    # FIXME: cert-manager.yaml doesn't validate, so this is disabled for now.
-    # Maybe the next version will validate?
+    # cert-manager's custom resource definitions don't validate,
+    # so this is disabled for now.
     # validate:
     #   fail_on_error: yes
     #   strict: yes
-    definition: "{{ lookup('template', item) }}"
-  with_items:
-    # https://cert-manager.io/docs/
-    - cert-manager.yaml
-    - letsencrypt/issuers.yaml
-
-
-- name: Re-enable validation for cert-manager namespace
-  k8s:
-    context: "{{ k8s_context|mandatory }}"
-    kubeconfig: "{{ k8s_kubeconfig }}"
-    wait: yes
-    wait_timeout: "{{ k8s_wait_timeout }}"
-    validate:
-      fail_on_error: yes
-      strict: yes
-    definition:
-      apiVersion: v1
-      kind: Namespace
-      metadata:
-        name: cert-manager
-        labels:
-          certmanager.k8s.io/disable-validation: "false"
-
-# ingress-nginx installation process adapted from:
-# https://kubernetes.github.io/ingress-nginx/deploy/#prerequisite-generic-deployment-command
-- name: Deploy Nginx Ingress Controller
-  k8s:
-    context: "{{ k8s_context|mandatory }}"
-    kubeconfig: "{{ k8s_kubeconfig }}"
-    wait: yes
-    wait_timeout: "{{ k8s_wait_timeout }}"
-    validate:
-      fail_on_error: yes
-      strict: yes
-    definition: "{{ lookup('template', item) }}"
-  with_items:
-    - ingress-nginx/mandatory.yaml
-    - ingress-nginx/cloud-generic.yaml
-    - ingress-nginx/patch-configmap.yaml
-  when: k8s_install_ingress_controller
-
-- name: Deploy Papertrail logspout
-  k8s:
-    context: "{{ k8s_context|mandatory }}"
-    kubeconfig: "{{ k8s_kubeconfig }}"
-    state: "{{ k8s_papertrail_logspout_enabled | ternary('present', 'absent') }}"
-    wait: yes
-    wait_timeout: "{{ k8s_wait_timeout }}"
-    validate:
-      fail_on_error: yes
-      strict: yes
-    # Stored locally to convert to template
-    # https://help.papertrailapp.com/assets/files/papertrail-logspout-daemonset.yml
-    definition: "{{ lookup('template', 'papertrail/papertrail-logspout-daemonset.yml') }}"
-  tags: [logspout]
-
-- name: "Install kube-state-metrics {{ k8s_newrelic_kube_state_metrics_version }}"
-  k8s:
-    context: "{{ k8s_context }}"
-    kubeconfig: "{{ k8s_kubeconfig }}"
-    state: "{{ k8s_newrelic_enabled | ternary('present', 'absent') }}"
-    wait: yes
-    validate:
-      fail_on_error: yes
-      strict: yes
-    definition: "{{ lookup('url', item, split_lines=False) }}"
-  tags: [metrics]
-  with_items:
-  - "https://raw.githubusercontent.com/kubernetes/kube-state-metrics/{{ k8s_newrelic_kube_state_metrics_version }}/kubernetes/kube-state-metrics-cluster-role-binding.yaml"
-  - "https://raw.githubusercontent.com/kubernetes/kube-state-metrics/{{ k8s_newrelic_kube_state_metrics_version }}/kubernetes/kube-state-metrics-cluster-role.yaml"
-  - "https://raw.githubusercontent.com/kubernetes/kube-state-metrics/{{ k8s_newrelic_kube_state_metrics_version }}/kubernetes/kube-state-metrics-service-account.yaml"
-  - "https://raw.githubusercontent.com/kubernetes/kube-state-metrics/{{ k8s_newrelic_kube_state_metrics_version }}/kubernetes/kube-state-metrics-deployment.yaml"
-  - "https://raw.githubusercontent.com/kubernetes/kube-state-metrics/{{ k8s_newrelic_kube_state_metrics_version }}/kubernetes/kube-state-metrics-service.yaml"
-
-- name: Install New Relic Infrastructure Agent
-  k8s:
-    context: "{{ k8s_context }}"
-    kubeconfig: "{{ k8s_kubeconfig }}"
-    state: "{{ k8s_newrelic_enabled | ternary('present', 'absent') }}"
-    wait: yes
-    validate:
-      fail_on_error: yes
-      strict: yes
-    # Stored locally to convert to template
-    # https://docs.newrelic.com/docs/integrations/kubernetes-integration/installation/kubernetes-installation-configuration
-    definition: "{{ lookup('template', 'newrelic/newrelic-infrastructure-k8s-latest.yaml') }}"
-  tags: [metrics]
+    definition: "{{ lookup('template', 'letsencrypt/issuers.yaml') }}"
+  when: k8s_install_cert_manager
 
 - name: Grant access to IAM users if aws
   when: k8s_cluster_type == "aws"
