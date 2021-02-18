@@ -5,7 +5,7 @@ This project uses [semantic versioning](https://semver.org/).
 ## Changes
 
 
-### v1.0.0 on TBD
+### v1.0.0 on Feb 18, 2021
 
 **BACKWARDS INCOMPATIBLE CHANGES:**
 
