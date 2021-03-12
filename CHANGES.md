@@ -4,6 +4,10 @@ This project uses [semantic versioning](https://semver.org/).
 
 ## Changes
 
+### v1.1.0 on Mar 12, 2021
+
+* Move CI user creation to [caktus.django-k8s](https://github.com/caktus/ansible-role-django-k8s) role since it is something that is project or environment-specific.
+
 
 ### v1.0.0 on Feb 18, 2021
 
