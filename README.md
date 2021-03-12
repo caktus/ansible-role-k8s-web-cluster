@@ -8,7 +8,6 @@ Ocean. The configuration includes installing:
 * Nginx Ingress Controller ([Helm Chart](https://github.com/kubernetes/ingress-nginx/tree/master/charts/ingress-nginx))
 * Certificate manager ([Helm Chart](https://github.com/jetstack/cert-manager/tree/master/deploy/charts/cert-manager))
 * Let's Encrypt certificate issuers (staging and production)
-* AWS IAM user with limited permissions for CI deploys
 * For AWS, granting cluster access to IAM users
 
 ## License
