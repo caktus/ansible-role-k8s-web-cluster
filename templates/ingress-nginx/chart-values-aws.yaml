@@ -27,3 +27,4 @@ controller:
     # Enable PROXY protocol in Nginx
     use-proxy-protocol: "true"
 {% endif %}
+  replicaCount: {{ k8s_ingress_nginx_replica_count }}

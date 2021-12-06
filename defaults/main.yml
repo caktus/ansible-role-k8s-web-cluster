@@ -28,6 +28,7 @@ k8s_purge_ingress_controller: no
 # https://github.com/kubernetes/ingress-nginx/releases
 k8s_ingress_nginx_chart_version: "3.23.0"
 k8s_ingress_nginx_namespace: ingress-nginx
+k8s_ingress_nginx_replica_count: 2
 
 # cert-manager settings
 k8s_install_cert_manager: yes

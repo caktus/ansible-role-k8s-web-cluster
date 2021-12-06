@@ -4,14 +4,15 @@ controller:
   service:
     annotations:
       # Enable PROXY protocol on the load balancer
-      service.beta.kubernetes.io/do-loadbalancer-enable-proxy-protocol: "{% if k8s_digitalocean_loadbalancer_hostname %}true{% else %}false{% endif %}"
+      service.beta.kubernetes.io/do-loadbalancer-enable-proxy-protocol: "{% if k8s_digitalocean_load_balancer_hostname %}true{% else %}false{% endif %}"
       # Digital Ocean load balancers must be accessed by hostname if PROXY protocol is enabled, since
       # cert-manager verifications requires pods to be able to reach the cluster via the LoadBalancer
       # address. See:
       # https://www.digitalocean.com/docs/kubernetes/how-to/configure-load-balancers/#accessing-by-hostname-annotation
-{% if k8s_digitalocean_loadbalancer_hostname %}
-      service.beta.kubernetes.io/do-loadbalancer-hostname: "{{ k8s_digitalocean_loadbalancer_hostname }}"
+{% if k8s_digitalocean_load_balancer_hostname %}
+      service.beta.kubernetes.io/do-loadbalancer-hostname: "{{ k8s_digitalocean_load_balancer_hostname }}"
 {% endif %}
   config:
     # Enable PROXY protocol in Nginx
-    use-proxy-protocol: "{% if k8s_digitalocean_loadbalancer_hostname %}true{% else %}false{% endif %}"
+    use-proxy-protocol: "{% if k8s_digitalocean_load_balancer_hostname %}true{% else %}false{% endif %}"
+  replicaCount: {{ k8s_ingress_nginx_replica_count }}
