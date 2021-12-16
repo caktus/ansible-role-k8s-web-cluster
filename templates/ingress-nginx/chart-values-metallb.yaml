@@ -1,8 +1,9 @@
 # Reference for values accepted by the ingress-nginx chart:
 # https://github.com/kubernetes/ingress-nginx/blob/master/charts/ingress-nginx/values.yaml
 controller:
-{% if k8s_ingress_nginx_load_balancer_ip is defined %}
   service:
+{% if k8s_ingress_nginx_load_balancer_ip is defined %}
     loadBalancerIP: "{{ k8s_ingress_nginx_load_balancer_ip }}"
 {% endif %}
+    externalTrafficPolicy: Local  # required to see true client IP
   replicaCount: {{ k8s_ingress_nginx_replica_count }}
