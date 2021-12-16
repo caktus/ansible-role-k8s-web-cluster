@@ -2,6 +2,9 @@
 # https://github.com/kubernetes/ingress-nginx/blob/master/charts/ingress-nginx/values.yaml
 controller:
   service:
+{% if k8s_ingress_nginx_load_balancer_ip is defined %}
+    loadBalancerIP: "{{ k8s_ingress_nginx_load_balancer_ip }}"
+{% endif %}
 {% if k8s_aws_load_balancer_type == "nlb" %}
     # Adapted from the NLB configuration for the non-Helm install (for some reason NLB
     # is not yet the default for Helm installs):

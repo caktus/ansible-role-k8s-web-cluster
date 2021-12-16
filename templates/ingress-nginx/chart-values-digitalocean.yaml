@@ -2,6 +2,9 @@
 # https://github.com/kubernetes/ingress-nginx/blob/master/charts/ingress-nginx/values.yaml
 controller:
   service:
+{% if k8s_ingress_nginx_load_balancer_ip is defined %}
+    loadBalancerIP: "{{ k8s_ingress_nginx_load_balancer_ip }}"
+{% endif %}
     annotations:
       # Enable PROXY protocol on the load balancer
       service.beta.kubernetes.io/do-loadbalancer-enable-proxy-protocol: "{% if k8s_digitalocean_load_balancer_hostname %}true{% else %}false{% endif %}"

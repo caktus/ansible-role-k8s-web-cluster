@@ -30,6 +30,8 @@ k8s_ingress_nginx_chart_version: "3.23.0"
 k8s_ingress_nginx_namespace: ingress-nginx
 k8s_ingress_nginx_replica_count: 2
 k8s_ingress_class: ngnix
+# Optionally set the loadBalancerIP of the Service (if supported by the provider):
+# k8s_ingress_nginx_load_balancer_ip: w.x.y.z
 
 # cert-manager settings
 k8s_install_cert_manager: yes
