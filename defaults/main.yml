@@ -30,6 +30,31 @@ k8s_ingress_nginx_chart_version: "3.23.0"
 k8s_ingress_nginx_namespace: ingress-nginx
 k8s_ingress_nginx_replica_count: 2
 k8s_ingress_class: ngnix
+k8s_ingress_nginx_affinity:
+  # This aims to be a nice default that prefers (but does not require) scheduling pods on
+  # different nodes. Taken from the example here:
+  # https://github.com/kubernetes/ingress-nginx/blob/main/charts/ingress-nginx/values.yaml#L222-L241
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+    - weight: 100
+      podAffinityTerm:
+        labelSelector:
+          matchExpressions:
+          - key: app.kubernetes.io/name
+            operator: In
+            values:
+            - ingress-nginx
+          - key: app.kubernetes.io/instance
+            operator: In
+            values:
+            - ingress-nginx
+          - key: app.kubernetes.io/component
+            operator: In
+            values:
+            - controller
+        topologyKey: kubernetes.io/hostname
+# Optionally set the loadBalancerIP of the Service (if supported by the provider):
+# k8s_ingress_nginx_load_balancer_ip: w.x.y.z
 
 # cert-manager settings
 k8s_install_cert_manager: yes

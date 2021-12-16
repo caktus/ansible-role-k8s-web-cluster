@@ -2,8 +2,9 @@
 # https://github.com/kubernetes/ingress-nginx/blob/master/charts/ingress-nginx/values.yaml
 controller:
   affinity: {{ k8s_ingress_nginx_affinity | to_json }}
-{% if k8s_ingress_nginx_load_balancer_ip is defined %}
   service:
+{% if k8s_ingress_nginx_load_balancer_ip is defined %}
     loadBalancerIP: "{{ k8s_ingress_nginx_load_balancer_ip }}"
 {% endif %}
+    externalTrafficPolicy: Local  # required to see true client IP
   replicaCount: {{ k8s_ingress_nginx_replica_count }}
