@@ -29,7 +29,7 @@ k8s_purge_ingress_controller: no
 k8s_ingress_nginx_chart_version: "3.23.0"
 k8s_ingress_nginx_namespace: ingress-nginx
 k8s_ingress_nginx_replica_count: 2
-k8s_ingress_class: ngnix
+k8s_ingress_class: nginx
 k8s_ingress_nginx_affinity:
   # This aims to be a nice default that prefers (but does not require) scheduling pods on
   # different nodes. Taken from the example here:
