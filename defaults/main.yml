@@ -64,6 +64,13 @@ k8s_purge_cert_manager: no
 # https://github.com/jetstack/cert-manager/releases
 k8s_cert_manager_chart_version: "v1.2.0"
 k8s_cert_manager_namespace: cert-manager
+k8s_cert_manager_http01_solver:
+  http01:
+    ingress:
+      class: "{{ k8s_ingress_class }}"
+# Add a single challenge solver by default, HTTP01 using nginx
+k8s_cert_manager_solvers:
+  - "{{ k8s_cert_manager_http01_solver }}"
 
 
 # Let's Encrypt will use this to contact you about expiring

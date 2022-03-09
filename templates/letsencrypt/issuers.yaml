@@ -12,11 +12,8 @@ spec:
     privateKeySecretRef:
       # Secret resource used to store the account's private key.
       name: letsencrypt-staging-account-key
-    # Add a single challenge solver, HTTP01 using nginx
-    solvers:
-    - http01:
-        ingress:
-          class: "{{ k8s_ingress_class }}"
+    solvers: "{{ k8s_cert_manager_solvers | to_json }}"
+
 ---
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
@@ -32,8 +29,4 @@ spec:
     privateKeySecretRef:
       # Secret resource used to store the account's private key.
       name: letsencrypt-production-account-key
-    # Add a single challenge solver, HTTP01 using nginx
-    solvers:
-    - http01:
-        ingress:
-          class: "{{ k8s_ingress_class }}"
+    solvers: "{{ k8s_cert_manager_solvers | to_json }}"
