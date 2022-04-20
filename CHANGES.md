@@ -4,6 +4,13 @@ This project uses [semantic versioning](https://semver.org/).
 
 ## Changes
 
+### v1.3.0 on April 20th, 2022
+* Set nginx `podAntiAffinity` to default to be a nice default that prefers (but does not require) scheduling pods on different nodes. Override with `k8s_ingress_nginx_affinity`.
+* Allow configuration of nginx service `loadBalancerIP` via `k8s_ingress_nginx_load_balancer_ip`. 
+* Add extendable `k8s_cert_manager_solvers` variable to support configuring DNS01 challenge provider 
+* Update api version for echotest ingress
+
+
 ### v1.2.0 on Dec 6th 2021
 - Default to 2 replicas for ingress controller
 - Fix typo in `k8s_digitalocean_load_balancer_hostname`
