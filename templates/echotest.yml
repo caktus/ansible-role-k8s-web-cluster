@@ -38,13 +38,13 @@ spec:
   selector:
     app: echoserver
 ---
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: echoserver
   namespace: echoserver
   annotations:
-    kubernetes.io/ingress.class: "nginx"
+    kubernetes.io/ingress.class: "{{ k8s_ingress_class }}"
     cert-manager.io/cluster-issuer:  "{{ k8s_echotest_letsencrypt_issuer }}"
 spec:
   tls:
@@ -56,6 +56,9 @@ spec:
     http:
       paths:
       - path: /
+        pathType: Prefix
         backend:
-          serviceName: echoserver
-          servicePort: 80
+          service:
+            name: echoserver
+            port:
+              number: 80
