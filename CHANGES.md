@@ -4,6 +4,9 @@ This project uses [semantic versioning](https://semver.org/).
 
 ## Changes
 
+### v1.4.0 on February 8th, 2023
+* Add optional [Descheduler for Kubernetes](https://github.com/kubernetes-sigs/descheduler/) support. Enable with `k8s_install_descheduler` and reference `defaults/main.yml` for configuration options.
+
 ### v1.3.0 on April 20th, 2022
 * Set nginx `podAntiAffinity` to default to be a nice default that prefers (but does not require) scheduling pods on different nodes. Override with `k8s_ingress_nginx_affinity`.
 * Allow configuration of nginx service `loadBalancerIP` via `k8s_ingress_nginx_load_balancer_ip`. 
