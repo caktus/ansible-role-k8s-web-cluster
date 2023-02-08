@@ -3,6 +3,19 @@ k8s_kubeconfig: ~/.kube/config
 # <aws|gcp|azure|digitalocean>
 # k8s_cluster_type: ''
 
+# Set to yes to enable Descheduler on the cluster
+# https://artifacthub.io/packages/helm/descheduler/descheduler
+k8s_install_descheduler: no
+# You must set the k8s_descheduler_chart_version to match the Kubernetes
+# node version (0.23.x -> K8s 1.23.x); see:
+# https://github.com/kubernetes-sigs/descheduler#compatibility-matrix
+# k8s_descheduler_chart_version: "v0.23.2"
+# Customize the policy via k8s_descheduler_release_values as needed.
+# To verify changes to the policy:
+#   kubectl -n kube-system describe configmap/descheduler
+# (incorrect values will NOT break the helm release)
+k8s_descheduler_release_values: {}
+
 # DO NOT edit k8s_aws_load_balancer_type after creating your Service. Delete the
 # nginx-ingress namespace and re-run this role if you really need to change the
 # AWS load balancer type.

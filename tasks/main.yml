@@ -22,6 +22,19 @@
     state: absent
   when: k8s_purge_ingress_controller
 
+- name: Apply Descheduler Helm chart
+  community.kubernetes.helm:
+    context: "{{ k8s_context|mandatory }}"
+    kubeconfig: "{{ k8s_kubeconfig }}"
+    chart_repo_url: https://kubernetes-sigs.github.io/descheduler/
+    chart_ref: descheduler
+    chart_version: "{{ k8s_descheduler_chart_version }}"
+    release_name: descheduler
+    release_namespace: "kube-system"
+    release_values: "{{ k8s_descheduler_release_values }}"
+    wait: yes
+  when: k8s_install_descheduler
+
 - name: Create ingress-nginx namespace
   community.kubernetes.k8s:
     context: "{{ k8s_context|mandatory }}"

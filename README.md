@@ -23,6 +23,8 @@ Development sponsored by [Caktus Consulting Group, LLC](http://www.caktusgroup.c
 
 * ``pip install openshift kubernetes-validate``
 * [helm](https://helm.sh/docs/intro/install/)
+  * Important: The version must be [supported by](https://helm.sh/docs/topics/version_skew/#supported-version-skew) the current Kubernetes cluster version).
+  * For Caktus projects, refer to the [Developer Documentation](https://caktus.github.io/developer-documentation/developer-onboarding/kubernetes/) for the currently recommended version.
 
 
 ## Installation
