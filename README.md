@@ -22,6 +22,7 @@ Development sponsored by [Caktus Consulting Group, LLC](http://www.caktusgroup.c
 
 ## Requirements
 
+* Ansible v6.0+
 * ``pip install openshift kubernetes-validate``
 * [helm](https://helm.sh/docs/intro/install/)
   * *Important:* The version must be [supported by](https://helm.sh/docs/topics/version_skew/#supported-version-skew) the current Kubernetes cluster version.

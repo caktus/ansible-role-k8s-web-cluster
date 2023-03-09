@@ -1,11 +1,11 @@
 ---
 # Sanity check so we don't accidentally remove all access to the cluster on AWS:
 - when: (k8s_cluster_type == "aws") and (k8s_iam_users|length == 0)
-  fail:
+  ansible.builtin.fail:
     msg: "Set k8s_iam_users to a list of IAM usernames who should have access to manage the cluster"
 
 - name: Remove cert-manager
-  k8s:
+  kubernetes.core.k8s:
     context: "{{ k8s_context|mandatory }}"
     kubeconfig: "{{ k8s_kubeconfig }}"
     wait: yes
@@ -14,7 +14,7 @@
   when: k8s_purge_cert_manager
 
 - name: Remove ingress-nginx
-  k8s:
+  kubernetes.core.k8s:
     context: "{{ k8s_context|mandatory }}"
     kubeconfig: "{{ k8s_kubeconfig }}"
     wait: yes
@@ -84,7 +84,7 @@
   when: k8s_install_cert_manager
 
 - name: Deploy Let's Encrypt issuers
-  k8s:
+  kubernetes.core.k8s:
     context: "{{ k8s_context|mandatory }}"
     kubeconfig: "{{ k8s_kubeconfig }}"
     wait: yes
@@ -98,7 +98,7 @@
 
 - name: Grant access to IAM users if aws
   when: k8s_cluster_type == "aws"
-  k8s:
+  kubernetes.core.k8s:
     definition: "{{ lookup('template', 'aws/cluster-auth.yaml') }}"
     context: "{{ k8s_context }}"
     kubeconfig: "{{ k8s_kubeconfig }}"
