@@ -78,8 +78,7 @@
     chart_version: "{{ k8s_cert_manager_chart_version }}"
     release_name: cert-manager
     release_namespace: "{{ k8s_cert_manager_namespace }}"
-    release_values:
-      installCRDs: "true"
+    release_values: "{{ k8s_cert_manager_release_values }}"
     wait: yes
   when: k8s_install_cert_manager
 
