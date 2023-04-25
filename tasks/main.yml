@@ -1,11 +1,11 @@
 ---
 # Sanity check so we don't accidentally remove all access to the cluster on AWS:
 - when: (k8s_cluster_type == "aws") and (k8s_iam_users|length == 0)
-  fail:
+  ansible.builtin.fail:
     msg: "Set k8s_iam_users to a list of IAM usernames who should have access to manage the cluster"
 
 - name: Remove cert-manager
-  k8s:
+  kubernetes.core.k8s:
     context: "{{ k8s_context|mandatory }}"
     kubeconfig: "{{ k8s_kubeconfig }}"
     wait: yes
@@ -14,7 +14,7 @@
   when: k8s_purge_cert_manager
 
 - name: Remove ingress-nginx
-  k8s:
+  kubernetes.core.k8s:
     context: "{{ k8s_context|mandatory }}"
     kubeconfig: "{{ k8s_kubeconfig }}"
     wait: yes
@@ -23,7 +23,7 @@
   when: k8s_purge_ingress_controller
 
 - name: Apply Descheduler Helm chart
-  community.kubernetes.helm:
+  kubernetes.core.helm:
     context: "{{ k8s_context|mandatory }}"
     kubeconfig: "{{ k8s_kubeconfig }}"
     chart_repo_url: https://kubernetes-sigs.github.io/descheduler/
@@ -36,7 +36,7 @@
   when: k8s_install_descheduler
 
 - name: Create ingress-nginx namespace
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     context: "{{ k8s_context|mandatory }}"
     kubeconfig: "{{ k8s_kubeconfig }}"
     name: "{{ k8s_ingress_nginx_namespace }}"
@@ -46,7 +46,7 @@
   when: k8s_install_ingress_controller
 
 - name: Create cert-manager namespace
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     context: "{{ k8s_context|mandatory }}"
     kubeconfig: "{{ k8s_kubeconfig }}"
     name: "{{ k8s_cert_manager_namespace }}"
@@ -56,7 +56,7 @@
   when: k8s_install_cert_manager
 
 - name: Add ingress-nginx Helm chart
-  community.kubernetes.helm:
+  kubernetes.core.helm:
     context: "{{ k8s_context|mandatory }}"
     kubeconfig: "{{ k8s_kubeconfig }}"
     chart_repo_url: "https://kubernetes.github.io/ingress-nginx"
@@ -70,7 +70,7 @@
   when: k8s_install_ingress_controller
 
 - name: Add cert-manager Helm chart
-  community.kubernetes.helm:
+  kubernetes.core.helm:
     context: "{{ k8s_context|mandatory }}"
     kubeconfig: "{{ k8s_kubeconfig }}"
     chart_repo_url: "https://charts.jetstack.io"
@@ -78,13 +78,12 @@
     chart_version: "{{ k8s_cert_manager_chart_version }}"
     release_name: cert-manager
     release_namespace: "{{ k8s_cert_manager_namespace }}"
-    release_values:
-      installCRDs: "true"
+    release_values: "{{ k8s_cert_manager_release_values }}"
     wait: yes
   when: k8s_install_cert_manager
 
 - name: Deploy Let's Encrypt issuers
-  k8s:
+  kubernetes.core.k8s:
     context: "{{ k8s_context|mandatory }}"
     kubeconfig: "{{ k8s_kubeconfig }}"
     wait: yes
@@ -98,7 +97,7 @@
 
 - name: Grant access to IAM users if aws
   when: k8s_cluster_type == "aws"
-  k8s:
+  kubernetes.core.k8s:
     definition: "{{ lookup('template', 'aws/cluster-auth.yaml') }}"
     context: "{{ k8s_context }}"
     kubeconfig: "{{ k8s_kubeconfig }}"

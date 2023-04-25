@@ -4,6 +4,12 @@ This project uses [semantic versioning](https://semver.org/).
 
 ## Changes
 
+### v1.5.0 on April 11, 2023
+* **Requires Ansible v6.0+**
+* Switch to `kubernetes.core` for Ansible 6.x+ support. The `community.kubernetes` collection was renamed to `kubernetes.core` in [v2.0.0 of the kubernetes.core collection](https://github.com/ansible-collections/community.kubernetes/blob/main/CHANGELOG.rst#v2-0-0). Since [Ansible v3.0.0](https://github.com/ansible-community/ansible-build-data/blob/main/3/CHANGELOG-v3.rst#included-collections), both the `kubernetes.core` and `community.kubernetes` namespaced collections were included for convenience. [Ansible v6.0.0](https://github.com/ansible-community/ansible-build-data/blob/f3602822e899015312852bb3e2debe52df109135/6/CHANGELOG-v6.rst#L4281) removed the `community.kubernetes` convenience package.
+* Use [fully qualified collection names (FQCNs)](https://github.com/ansible-collections/overview/blob/4e7fdd2512a4ec213b1beccef3b58dfb58b0d06e/README.rst#terminology) to be explicit
+* Add ``k8s_cert_manager_release_values`` variable to allow per-project customization of Helm chart values
+
 ### v1.4.0 on February 8th, 2023
 * Add optional [Descheduler for Kubernetes](https://github.com/kubernetes-sigs/descheduler/) support. Enable with `k8s_install_descheduler` and reference `defaults/main.yml` for configuration options.
 

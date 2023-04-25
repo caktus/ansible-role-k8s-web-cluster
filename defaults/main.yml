@@ -84,7 +84,9 @@ k8s_cert_manager_http01_solver:
 # Add a single challenge solver by default, HTTP01 using nginx
 k8s_cert_manager_solvers:
   - "{{ k8s_cert_manager_http01_solver }}"
-
+# https://github.com/cert-manager/cert-manager/blob/master/deploy/charts/cert-manager/values.yaml
+k8s_cert_manager_release_values:
+  installCRDs: "true"
 
 # Let's Encrypt will use this to contact you about expiring
 # certificates, and issues related to your account.
