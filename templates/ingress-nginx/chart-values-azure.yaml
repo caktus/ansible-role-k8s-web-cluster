@@ -1,6 +1,7 @@
 # Reference for values accepted by the ingress-nginx chart:
 # https://github.com/kubernetes/ingress-nginx/blob/master/charts/ingress-nginx/values.yaml
 controller:
+  allowSnippetAnnotations: true
   affinity: {{ k8s_ingress_nginx_affinity | to_json }}
 {% if k8s_ingress_nginx_load_balancer_ip is defined %}
   service:
