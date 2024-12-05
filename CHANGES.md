@@ -4,7 +4,11 @@ This project uses [semantic versioning](https://semver.org/).
 
 ## Changes
 
-### v1.5.0 on April 11, 2023
+### v1.6.0 on December 5th, 2024
+* Use boolean type for `installCRDs` cert-manager value to support [v1.15.0+](https://github.com/cert-manager/cert-manager/releases/tag/v1.15.0). Eventually, this value should be migrated to `crds.keep: true` and `crds.enabled: true`.
+
+
+### v1.5.0 on April 11th, 2023
 * **Requires Ansible v6.0+**
 * Switch to `kubernetes.core` for Ansible 6.x+ support. The `community.kubernetes` collection was renamed to `kubernetes.core` in [v2.0.0 of the kubernetes.core collection](https://github.com/ansible-collections/community.kubernetes/blob/main/CHANGELOG.rst#v2-0-0). Since [Ansible v3.0.0](https://github.com/ansible-community/ansible-build-data/blob/main/3/CHANGELOG-v3.rst#included-collections), both the `kubernetes.core` and `community.kubernetes` namespaced collections were included for convenience. [Ansible v6.0.0](https://github.com/ansible-community/ansible-build-data/blob/f3602822e899015312852bb3e2debe52df109135/6/CHANGELOG-v6.rst#L4281) removed the `community.kubernetes` convenience package.
 * Use [fully qualified collection names (FQCNs)](https://github.com/ansible-collections/overview/blob/4e7fdd2512a4ec213b1beccef3b58dfb58b0d06e/README.rst#terminology) to be explicit
