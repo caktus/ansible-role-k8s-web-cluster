@@ -4,8 +4,12 @@ This project uses [semantic versioning](https://semver.org/).
 
 ## Changes
 
-### v1.6.0 on December 5th, 2024
+### v1.7.0 on December 5th, 2024
 * Use boolean type for `installCRDs` cert-manager value to support [v1.15.0+](https://github.com/cert-manager/cert-manager/releases/tag/v1.15.0). Eventually, this value should be migrated to `crds.keep: true` and `crds.enabled: true`.
+
+
+### v1.6.0 on May 8th, 2024
+* Set `allowSnippetAnnotations: true` to allow user snippets (see [Disable user snippets per default](https://github.com/kubernetes/ingress-nginx/pull/10393)).
 
 
 ### v1.5.0 on April 11th, 2023
