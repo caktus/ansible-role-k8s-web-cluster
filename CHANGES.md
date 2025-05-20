@@ -4,6 +4,9 @@ This project uses [semantic versioning](https://semver.org/).
 
 ## Changes
 
+### v1.8.0 on May 16th, 2025
+* Add support for [`loadBalancerSourceRanges`](https://github.com/kubernetes/ingress-nginx/blob/d3ab5efd54f38f2b7c961024553b0ad060e2e916/charts/ingress-nginx/values.yaml#L512-L513) in the AWS NLB configuration, allowing for more granular control over which IP ranges can access the load balancer.
+
 ### v1.7.0 on December 5th, 2024
 * Use boolean type for `installCRDs` cert-manager value to support [v1.15.0+](https://github.com/cert-manager/cert-manager/releases/tag/v1.15.0). Eventually, this value should be migrated to `crds.keep: true` and `crds.enabled: true`.
 
