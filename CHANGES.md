@@ -4,7 +4,7 @@ This project uses [semantic versioning](https://semver.org/).
 
 ## Changes
 
-### v1.8.0 on May 16th, 2025
+### v1.8.0 on May 20th, 2025
 * Add support for [`loadBalancerSourceRanges`](https://github.com/kubernetes/ingress-nginx/blob/d3ab5efd54f38f2b7c961024553b0ad060e2e916/charts/ingress-nginx/values.yaml#L512-L513) in the AWS NLB configuration, allowing for more granular control over which IP ranges can access the load balancer.
 
 ### v1.7.0 on December 5th, 2024
