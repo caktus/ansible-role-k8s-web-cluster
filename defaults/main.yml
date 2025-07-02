@@ -68,6 +68,9 @@ k8s_ingress_nginx_affinity:
         topologyKey: kubernetes.io/hostname
 # Optionally set the loadBalancerIP of the Service (if supported by the provider):
 # k8s_ingress_nginx_load_balancer_ip: w.x.y.z
+# https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/configmap/#annotations-risk-level
+# <Critical|High|Medium|Low>
+k8s_ingress_nginx_load_balancer_annotations_risk_level: "High"
 
 # cert-manager settings
 k8s_install_cert_manager: yes

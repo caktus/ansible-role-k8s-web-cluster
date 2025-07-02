@@ -4,6 +4,9 @@ This project uses [semantic versioning](https://semver.org/).
 
 ## Changes
 
+### v1.9.0 on July ???, 2025
+* Add support for [`annotations-risk-level`](https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/configmap/#annotations-risk-level) in the ingress-nginx controller.
+
 ### v1.8.0 on May 20th, 2025
 * Add support for [`loadBalancerSourceRanges`](https://github.com/kubernetes/ingress-nginx/blob/d3ab5efd54f38f2b7c961024553b0ad060e2e916/charts/ingress-nginx/values.yaml#L512-L513) in the AWS NLB configuration, allowing for more granular control over which IP ranges can access the load balancer.
 
