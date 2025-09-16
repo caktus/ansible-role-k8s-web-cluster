@@ -8,4 +8,6 @@ controller:
     loadBalancerIP: "{{ k8s_ingress_nginx_load_balancer_ip }}"
 {% endif %}
     externalTrafficPolicy: Local  # required to see true client IP
+  config:
+    annotations-risk-level: "{{ k8s_ingress_nginx_load_balancer_annotations_risk_level }}"
   replicaCount: {{ k8s_ingress_nginx_replica_count }}

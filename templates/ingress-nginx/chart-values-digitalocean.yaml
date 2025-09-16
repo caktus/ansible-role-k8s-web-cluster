@@ -20,4 +20,5 @@ controller:
   config:
     # Enable PROXY protocol in Nginx
     use-proxy-protocol: "{% if k8s_digitalocean_load_balancer_hostname %}true{% else %}false{% endif %}"
+    annotations-risk-level: "{{ k8s_ingress_nginx_load_balancer_annotations_risk_level }}"
   replicaCount: {{ k8s_ingress_nginx_replica_count }}
