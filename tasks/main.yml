@@ -106,3 +106,26 @@
     validate:
       fail_on_error: yes
       strict: yes
+
+- name: Create traefik namespace
+  tags: traefik
+  kubernetes.core.k8s:
+    context: "{{ k8s_context|mandatory }}"
+    kubeconfig: "{{ k8s_kubeconfig }}"
+    name: "{{ k8s_traefik_namespace }}"
+    api_version: v1
+    kind: Namespace
+    state: present
+
+- name: Add Traefik Helm chart
+  tags: traefik
+  kubernetes.core.helm:
+    context: "{{ k8s_context|mandatory }}"
+    kubeconfig: "{{ k8s_kubeconfig }}"
+    chart_repo_url: "https://traefik.github.io/charts"
+    chart_ref: traefik
+    chart_version: "{{ k8s_traefik_chart_version }}"
+    release_name: "traefik"
+    release_namespace: "{{ k8s_traefik_namespace }}"
+    release_values: "{{ k8s_traefik_release_values }}"
+    wait: yes
