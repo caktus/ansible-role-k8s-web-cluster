@@ -36,7 +36,7 @@
 - name: Create IAM Role with Trust Relationship
   tags: aws-lbc
   amazon.aws.iam_role:
-    name: "AWSLoadBalancerControllerRole"
+    role_name: "AWSLoadBalancerControllerRole"
     state: present
     assume_role_policy_document: "{{ lookup('template', 'aws/trust-policy.json.j2') }}"
     managed_policies:
