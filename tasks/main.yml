@@ -22,65 +22,71 @@
     state: absent
   when: k8s_purge_ingress_controller
 
-- name: Create IAM Policy for AWS Load Balancer Controller
+- name: Deploy AWS Load Balancer Controller and Dependecies
   tags: aws-lbc
-  amazon.aws.iam_managed_policy:
-    policy_name: "AWSLoadBalancerControllerIAMPolicy"
-    state: present
-    policy: >-
-      {{ lookup('pipe', 'curl -s https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/' 
-      + k8s_aws_load_balancer_controller_chart_version
-      + '/docs/install/iam_policy.json') }}
-  register: iam_policy
+  block:
+    - name: Get AWS Account ID
+      amazon.aws.aws_caller_info:
+      register: caller_info
 
-- name: Create IAM Role with Trust Relationship
-  tags: aws-lbc
-  amazon.aws.iam_role:
-    role_name: "AWSLoadBalancerControllerRole"
-    state: present
-    assume_role_policy_document: "{{ lookup('template', 'aws/trust-policy.json.j2') }}"
-    managed_policies:
-      - "{{ iam_policy.policy.arn }}"
-  vars:
-    # Fetch AWS Account ID
-    account_id: "{{ lookup('pipe', 'aws sts get-caller-identity --query Account --output text') }}"
-    # Fetch EKS OIDC Issuer
-    oidc_issuer: >-
-      {{ lookup('pipe', 'aws eks describe-cluster 
-      --name ' + k8s_cluster_name + ' 
-      --query "cluster.identity.oidc.issuer" 
-      --output text') | replace('https://', '') }}
-  register: iam_role
+    - name: Fetch LBC Policy JSON from GitHub
+      ansible.builtin.uri:
+        url: "https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/{{ k8s_aws_load_balancer_controller_chart_version }}/docs/install/iam_policy.json"
+        return_content: yes
+      register: aws_lbc_policy
 
-- name: Create AWS Load Balancer Controller ServiceAccount
-  tags: aws-lbc
-  kubernetes.core.k8s:
-    state: present
-    definition:
-      apiVersion: v1
-      kind: ServiceAccount
-      metadata:
-        name: "aws-load-balancer-controller"
-        namespace: "kube-system"
-        annotations:
-          eks.amazonaws.com/role-arn: "{{ iam_role.iam_role.arn }}"
+    - name: Create IAM Policy for AWS Load Balancer Controller
+      amazon.aws.iam_managed_policy:
+        policy_name: "AWSLoadBalancerControllerIAMPolicy"
+        state: present
+        policy: "{{ aws_lbc_policy.content | from_json }}"
+      register: iam_policy
 
-- name: Add AWS Load Balancer Controller
-  tags: aws-lbc
-  kubernetes.core.helm:
-    context: "{{ k8s_context|mandatory }}"
-    kubeconfig: "{{ k8s_kubeconfig }}"
-    chart_repo_url: "https://aws.github.io/eks-charts"
-    chart_ref: aws-load-balancer-controller
-    chart_version: "{{ k8s_aws_load_balancer_controller_chart_version }}"
-    release_name: "aws-load-balancer-controller"
-    release_namespace: "kube-system"
-    release_values:
-      clusterName: "{{ k8s_cluster_name }}"
-      serviceAccount:
-        create: false
-        name: aws-load-balancer-controller
-    wait: yes
+    - name: Create IAM Role with Trust Relationship
+      amazon.aws.iam_role:
+        role_name: "AWSLoadBalancerControllerRole"
+        state: present
+        assume_role_policy_document: "{{ lookup('template', 'aws/trust-policy.json.j2') }}"
+        managed_policies:
+          - "{{ iam_policy.policy.arn }}"
+      vars:
+        account_id: "{{ caller_info.account }}"
+        oidc_issuer: >-
+          {{ lookup('pipe', 'aws eks describe-cluster 
+          --name ' + k8s_cluster_name + ' 
+          --query "cluster.identity.oidc.issuer" 
+          --output text') | replace('https://', '') }}
+      register: iam_role
+
+    - name: Create AWS Load Balancer Controller ServiceAccount
+      kubernetes.core.k8s:
+        state: present
+        definition:
+          apiVersion: v1
+          kind: ServiceAccount
+          metadata:
+            name: "aws-load-balancer-controller"
+            namespace: "kube-system"
+            annotations:
+              eks.amazonaws.com/role-arn: "{{ iam_role.iam_role.arn }}"
+
+    - name: Add AWS Load Balancer Controller
+      kubernetes.core.helm:
+        context: "{{ k8s_context|mandatory }}"
+        kubeconfig: "{{ k8s_kubeconfig }}"
+        chart_repo_url: "https://aws.github.io/eks-charts"
+        chart_ref: aws-load-balancer-controller
+        chart_version: "{{ k8s_aws_load_balancer_controller_chart_version }}"
+        release_name: "aws-load-balancer-controller"
+        release_namespace: "kube-system"
+        release_values:
+          clusterName: "{{ k8s_cluster_name }}"
+          serviceAccount:
+            create: false
+            name: aws-load-balancer-controller
+        wait: yes
+
+  when: k8s_cluster_type == "aws"
 
 - name: Apply Descheduler Helm chart
   kubernetes.core.helm:
