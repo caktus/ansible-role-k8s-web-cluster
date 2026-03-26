@@ -1,0 +1,87 @@
+ingressClass:
+  enabled: true
+  isDefaultClass: "{{ k8s_traefik_ingress_is_default }}"
+  name: traefik
+
+providers:
+  kubernetesIngress:
+    ingressClass: traefik
+    allowExternalNameServices: true
+    namespaces: []
+
+deployment:
+  replicas: {{ k8s_traefik_replica_count }}
+
+service:
+  type: LoadBalancer
+  spec:
+    loadBalancerIP: "{{ k8s_traefik_load_balancer_ip }}"
+    externalTrafficPolicy: Local
+
+ports:
+  web:
+    port: 8080
+    transport:
+      respondingTimeouts:
+        readTimeout: 3
+  websecure:
+    port: 8443
+    transport:
+      respondingTimeouts:
+        readTimeout: 3
+    middlewares:
+      - traefik-global-hsts@kubernetescrd 
+  traefik:
+    port: 9000
+
+affinity: {{ k8s_traefik_affinity | to_json }}
+
+# To access dashboard via port-forward run:
+# kubectl port-forward -n traefik service/traefik 8443:443
+# Then visit https://localhost:8443/dashboard/
+api:
+  dashboard: {{ k8s_enable_traefik_dashboard }}
+  insecure: false
+
+{% if k8s_enable_traefik_dashboard %}
+ingressRoute:
+  dashboard:
+    enabled: true
+    matchRule: PathPrefix(`/dashboard`) || PathPrefix(`/api`)
+    entryPoints:
+      - websecure
+    middlewares:
+      - name: dashboard-auth
+{% endif %}
+
+extraObjects:
+{% if k8s_enable_traefik_dashboard %}
+  - apiVersion: v1
+    kind: Secret
+    metadata:
+      name: dashboard-auth-secret
+    type: kubernetes.io/basic-auth
+    stringData:
+      username: admin
+      password: "{{ k8s_traefik_dashboard_password }}"
+  - apiVersion: traefik.io/v1alpha1
+    kind: Middleware
+    metadata:
+      name: dashboard-auth
+    spec:
+      basicAuth:
+        secret: dashboard-auth-secret
+{% endif %}
+  - apiVersion: traefik.io/v1alpha1
+    kind: Middleware
+    metadata:
+      name: global-hsts
+    spec:
+      headers:
+        stsSeconds: 63072000
+        stsIncludeSubdomains: false
+logs:
+  general:
+    level: "{{ k8s_traefik_log_level }}"
+  access:
+    enabled: true
