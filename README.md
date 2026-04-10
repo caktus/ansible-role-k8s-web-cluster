@@ -166,3 +166,70 @@ cert-manager    cert-manager    2               2021-02-11 15:41:47.024147 -0500
 upgrade](https://helm.sh/docs/intro/using_helm/#helm-upgrade-and-helm-rollback-upgrading-a-release-and-recovering-on-failure)
 has not been tested yet, but the hope is that the helm charts will support
 upgrades.
+
+## Traefik Support
+
+The role now supports Traefik as an alternative to ingress-nginx. Both Traefik and Ingress-nginx can be run side by side. If Ingress-nginx is no longer required, this can be brought down by setting `k8s_purge_ingress_controller` to `true`.
+
+### Ingress Selection
+
+By setting `k8s_traefik_ingress_is_default` to `true`, the role configures Traefik as the cluster's primary IngressClass:
+
+```
+ingressClass:
+  enabled: true
+  isDefaultClass: {{ k8s_traefik_ingress_is_default }}
+  name: traefik
+
+```
+
+### Cert-Manager Integration
+
+The variable `k8s_traefik_ingress_is_default` also configures how cert-manager handles HTTP-01 challenges. Setting it to `true`, dynamically updates the cert-manager solver to use the Traefik ingress class. If set to `false`, the solver will use `nginx`. This ensures that ACME challenge traffic is correctly routed through the active ingress controller to validate the TLS certificates.
+
+```
+k8s_cert_manager_http01_solver:
+  http01:
+    ingress:
+      class: "{{ k8s_traefik_ingress_class if k8s_traefik_ingress_is_default else k8s_ingress_class }}"
+```
+
+### Traefik Dashboard
+
+One can toggle the Traefik Web UI via the following variable:
+
+```
+k8s_enable_traefik_dashboard: true
+```
+
+Enabling the dashboard gives a visual overview of middlewares, active routes, entrypoints and backend health service. This can help with troubleshooting configuration errors as they are clearly visually flagged.
+
+
+### Other required default variables
+
+```
+k8s_traefik_namespace: "traefik"
+k8s_traefik_chart_version: "v38.0.2"
+k8s_traefik_ingress_class: traefik
+k8s_traefik_ingress_is_default: true
+k8s_enable_traefik_dashboard: false
+k8s_traefik_replica_count: 1
+k8s_traefik_log_level: "INFO"
+k8s_traefik_affinity:
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+              - key: app.kubernetes.io/name
+                operator: In
+                values:
+                  - traefik
+              - key: app.kubernetes.io/instance
+                operator: In
+                values:
+                  - traefik-traefik
+          topologyKey: "kubernetes.io/hostname"
+
+```
