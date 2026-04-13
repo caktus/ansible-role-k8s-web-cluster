@@ -1,0 +1,105 @@
+# Reference for values accepted by the traefik chart:
+# https://github.com/traefik/traefik-helm-chart/blob/master/traefik/values.yaml
+ingressClass:
+  enabled: true
+  isDefaultClass: {{ k8s_traefik_ingress_is_default }}
+  name: traefik
+
+providers:
+  kubernetesIngress:
+    publishedService:
+      enabled: true
+    ingressClass: traefik
+    allowExternalNameServices: true
+
+deployment:
+  replicas: {{ k8s_traefik_replica_count }}
+
+service:
+  type: LoadBalancer
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-type: "external"
+    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "instance"
+    service.beta.kubernetes.io/aws-load-balancer-scheme: "internet-facing"
+    service.beta.kubernetes.io/aws-load-balancer-attributes: "load_balancing.cross_zone.enabled=true"
+  spec:
+    externalTrafficPolicy: Local
+
+ports:
+  web:
+    port: 8000
+    exposedPort: 80
+    redirections:
+      entryPoint:
+        to: websecure
+        scheme: https
+        permanent: true
+  websecure:
+    port: 8443
+    exposedPort: 443
+    asDefault: true
+    tls:
+      enabled: true
+      certResolver: "" 
+
+affinity: {{ k8s_traefik_affinity | to_json }}
+
+# Traefik Dashbioard Settings
+api:
+  dashboard: {{ k8s_enable_traefik_dashboard }}
+  insecure: false
+
+{% if k8s_enable_traefik_dashboard %}
+ingressRoute:
+  dashboard:
+    enabled: true
+    matchRule: Host(`{{ k8s_traefik_dashboard_hostname }}`) && (PathPrefix(`/dashboard`) || PathPrefix(`/api`))
+    entryPoints:
+      - websecure
+    middlewares:
+      - name: dashboard-auth
+    tls:
+      secretName: traefik-dashboard-tls
+{% endif %}
+
+extraObjects:
+{% if k8s_enable_traefik_dashboard %}
+  - apiVersion: v1
+    kind: Secret
+    metadata:
+      name: dashboard-auth-secret
+      namespace: traefik
+    type: kubernetes.io/basic-auth
+    stringData:
+      username: admin
+      password: "{{ k8s_traefik_dashboard_password }}"
+
+  - apiVersion: traefik.io/v1alpha1
+    kind: Middleware
+    metadata:
+      name: dashboard-auth
+      namespace: traefik
+    spec:
+      basicAuth:
+        secret: dashboard-auth-secret
+
+  # Certficate for traefik dashboard site
+  - apiVersion: cert-manager.io/v1
+    kind: Certificate
+    metadata:
+      name: traefik-dashboard-cert
+      namespace: traefik
+    spec:
+      secretName: traefik-dashboard-tls
+      issuerRef:
+        name: letsencrypt-production
+        kind: ClusterIssuer
+      dnsNames:
+        - "{{ k8s_traefik_dashboard_hostname }}"
+{% endif %}
+
+logs: 
+  general:
+    level: "{{ k8s_traefik_log_level }}"
+  access:
+    enabled: true
