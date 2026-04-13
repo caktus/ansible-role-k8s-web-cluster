@@ -29,6 +29,11 @@ ports:
   web:
     port: 8000
     exposedPort: 80
+    transport:
+      respondingTimeouts:
+        readTimeout: "1800s" 
+        writeTimeout: "1800s"
+        idleTimeout: "180s"
     redirections:
       entryPoint:
         to: websecure
@@ -37,10 +42,15 @@ ports:
   websecure:
     port: 8443
     exposedPort: 443
+    ransport:
+      respondingTimeouts:
+        readTimeout: "1800s" 
+        writeTimeout: "1800s"
+        idleTimeout: "180s"
     asDefault: true
     tls:
       enabled: true
-      certResolver: "" 
+      certResolver: ""
 
 affinity: {{ k8s_traefik_affinity | to_json }}
 
