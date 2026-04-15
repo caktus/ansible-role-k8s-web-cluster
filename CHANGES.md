@@ -4,6 +4,17 @@ This project uses [semantic versioning](https://semver.org/).
 
 ## Changes
 
+### v1.10.0 on April 15, 2026
+Add Traefik Ingress support
+* **Traefik Integration**: Support for Traefik alongside or as a replacement for Nginx.
+
+* **Primary Ingress Toggle**: Use `k8s_traefik_ingress_is_default` to set Traefik as the cluster's default IngressClass.
+
+* **Dynamic ACME Routing**: Automatic cert-manager solver switching. If `k8s_traefik_ingress_is_default` is set to `true`, TLS challenges are automatically routed through Traefik.
+
+* **Traefik Dashboard**: Optional Web UI for route and middleware monitoring (k8s_enable_traefik_dashboard).
+
+
 ### v1.9.0 on July ???, 2025
 * Add support for [`annotations-risk-level`](https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/configmap/#annotations-risk-level) in the ingress-nginx controller.
 
