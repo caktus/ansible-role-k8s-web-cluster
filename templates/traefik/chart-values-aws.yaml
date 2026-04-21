@@ -42,7 +42,7 @@ ports:
   websecure:
     port: 8443
     exposedPort: 443
-    ransport:
+    transport:
       respondingTimeouts:
         readTimeout: "1800s" 
         writeTimeout: "1800s"
