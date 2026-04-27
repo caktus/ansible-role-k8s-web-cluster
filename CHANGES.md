@@ -4,6 +4,12 @@ This project uses [semantic versioning](https://semver.org/).
 
 ## Changes
 
+### v1.10.1 on April 27, 2026
+
+**Bug Fix**
+
+* Migrates AWS Load Balancer Controller IAM resources from static to dynamic naming. This Prevents OIDC issuer trust policy conflicts in AWS accounts with multiple EKS clusters.
+
 ### v1.10.0 on April 15, 2026
 Add Traefik Ingress support
 * **Traefik Integration**: Support for Traefik alongside or as a replacement for Nginx.
