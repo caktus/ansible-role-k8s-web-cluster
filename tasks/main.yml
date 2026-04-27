@@ -186,7 +186,7 @@
     api_version: v1
     kind: Namespace
     state: present
-  when: k8s_cluster_type != "libya"
+  when: k8s_web_cluster_role_install_traefik
 
 - name: Add Traefik Helm chart
   tags: traefik
@@ -200,4 +200,4 @@
     release_namespace: "{{ k8s_traefik_namespace }}"
     release_values: "{{ k8s_traefik_release_values | default(lookup('template', 'traefik/chart-values-%s.yaml' % k8s_cluster_type) | from_yaml) or omit }}"
     wait: yes
-  when: k8s_cluster_type != "libya"
+  when: k8s_web_cluster_role_install_traefik

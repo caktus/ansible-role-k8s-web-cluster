@@ -107,6 +107,9 @@ k8s_echotest_letsencrypt_issuer: 'letsencrypt-staging'
 # Values should be the IAM usernames (e.g. "johndev") and not anything more complicated.
 k8s_iam_users: []
 
+# When set to true, Traefik will be deployed using the k8s-web-cluster ansible role.
+k8s_web_cluster_role_install_traefik: true
+
 # Traefik deployment defaults
 k8s_traefik_namespace: "traefik"
 k8s_traefik_chart_version: "v38.0.2"
