@@ -27,6 +27,7 @@
   block:
     - name: Get AWS Account ID
       amazon.aws.aws_caller_info:
+        aws_profile: "{{ aws_profile | mandatory }}"
       register: caller_info
 
     - name: Fetch LBC Policy JSON from GitHub
@@ -37,14 +38,16 @@
 
     - name: Create IAM Policy for AWS Load Balancer Controller
       amazon.aws.iam_managed_policy:
-        policy_name: "AWSLoadBalancerControllerIAMPolicy"
+        aws_profile: "{{ aws_profile | mandatory }}"
+        policy_name: "{{ k8s_cluster_name }}-eks-aws-lbc-policy"
         state: present
         policy: "{{ aws_lbc_policy.content | from_json }}"
       register: iam_policy
 
     - name: Create IAM Role with Trust Relationship
       amazon.aws.iam_role:
-        role_name: "AWSLoadBalancerControllerRole"
+        aws_profile: "{{ aws_profile | mandatory }}"
+        role_name: "{{ k8s_cluster_name }}-eks-aws-lbc-role"
         state: present
         assume_role_policy_document: "{{ lookup('template', 'aws/trust-policy.json.j2') }}"
         managed_policies:
@@ -60,6 +63,8 @@
 
     - name: Create AWS Load Balancer Controller ServiceAccount
       kubernetes.core.k8s:
+        context: "{{ k8s_context|mandatory }}"
+        kubeconfig: "{{ k8s_kubeconfig }}"
         state: present
         definition:
           apiVersion: v1
@@ -85,8 +90,7 @@
             create: false
             name: aws-load-balancer-controller
         wait: yes
-
-  when: k8s_cluster_type == "aws"
+  when: "'aws' in k8s_cluster_type"
 
 - name: Apply Descheduler Helm chart
   kubernetes.core.helm:
@@ -182,6 +186,7 @@
     api_version: v1
     kind: Namespace
     state: present
+  when: k8s_web_cluster_role_install_traefik
 
 - name: Add Traefik Helm chart
   tags: traefik
@@ -195,3 +200,4 @@
     release_namespace: "{{ k8s_traefik_namespace }}"
     release_values: "{{ k8s_traefik_release_values | default(lookup('template', 'traefik/chart-values-%s.yaml' % k8s_cluster_type) | from_yaml) or omit }}"
     wait: yes
+  when: k8s_web_cluster_role_install_traefik

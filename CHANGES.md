@@ -4,6 +4,14 @@ This project uses [semantic versioning](https://semver.org/).
 
 ## Changes
 
+### v1.10.1 on April 27, 2026
+
+**Bug Fix**
+
+* Migrates AWS Load Balancer Controller IAM resources from static to dynamic naming. This Prevents OIDC issuer trust policy conflicts in AWS accounts with multiple EKS clusters.
+
+* Adds the `k8s_web_cluster_role_install_traefik` toggle which defaults to `true`. This allows skipping Traefik deployment in specific environments via the role, where it is managed via other workflows.
+
 ### v1.10.0 on April 15, 2026
 Add Traefik Ingress support
 * **Traefik Integration**: Support for Traefik alongside or as a replacement for Nginx.
