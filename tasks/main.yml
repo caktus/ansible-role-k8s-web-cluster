@@ -188,6 +188,34 @@
     state: present
   when: k8s_web_cluster_role_install_traefik
 
+# Helm upgrade does not manage traefik CRDs upgrade. These have to be separately upgraded prior to a chart upgrade as per official documentation:
+# https://github.com/traefik/traefik-helm-chart?tab=readme-ov-file#upgrading
+# ChangeLog for upgrade v38 to v39 https://github.com/traefik/traefik-helm-chart/blob/v39.0.8/traefik/Changelog.md#3900----
+
+# Fetch list of all crds for a specific chart version (k8s_traefik_chart_version) with the download link
+- name: Get list of CRD manifest metadata from Github
+  tags: traefik
+  ansible.builtin.uri:
+    url: "https://api.github.com/repos/traefik/traefik-helm-chart/contents/traefik/crds?ref={{ k8s_traefik_chart_version }}"
+    return_content: yes
+  register: crd_list
+
+# Download the CRD manifests and apply them.
+- name: Download and Apply Traefik CRDs
+  tags: traefik
+  kubernetes.core.k8s:
+    context: "{{ k8s_context|mandatory }}"
+    kubeconfig: "{{ k8s_kubeconfig }}"
+    state: present
+    definition: "{{ lookup('url', item.download_url, split_lines=False) }}"
+  loop: "{{ crd_list.json }}"
+  loop_control:
+    label: "{{ item.name }}"
+  when: 
+    - k8s_web_cluster_role_install_traefik
+    - item.name.endswith('.yaml')
+    - item.name != 'kustomization.yaml' # Skip as this is not a crd installed in the cluster
+
 - name: Add Traefik Helm chart
   tags: traefik
   kubernetes.core.helm:
