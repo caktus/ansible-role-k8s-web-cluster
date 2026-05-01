@@ -4,9 +4,10 @@ This project uses [semantic versioning](https://semver.org/).
 
 ## Changes
 
-### v1.11.0 on April 30, 2026
+### v1.11.0 on May 1, 2026
 
-* Bump Traefik helm chart to v39.0.8
+* Bump Traefik helm chart to v39.0.8.
+* Bug Fix: Update mandatory.yaml to delete orphaned ValidatingWebhookConfiguration resource.
 
 ### v1.10.1 on April 27, 2026
 
