@@ -199,6 +199,7 @@
     url: "https://api.github.com/repos/traefik/traefik-helm-chart/contents/traefik/crds?ref={{ k8s_traefik_chart_version }}"
     return_content: yes
   register: crd_list
+  when: k8s_web_cluster_role_install_traefik
 
 # Download the CRD manifests and apply them.
 - name: Download and Apply Traefik CRDs
