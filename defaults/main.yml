@@ -112,7 +112,7 @@ k8s_web_cluster_role_install_traefik: true
 
 # Traefik deployment defaults
 k8s_traefik_namespace: "traefik"
-k8s_traefik_chart_version: "v38.0.2"
+k8s_traefik_chart_version: "v39.0.8"
 k8s_traefik_ingress_class: traefik
 k8s_traefik_ingress_is_default: true
 k8s_enable_traefik_dashboard: false

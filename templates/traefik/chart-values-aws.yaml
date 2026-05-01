@@ -34,11 +34,12 @@ ports:
         readTimeout: "1800s" 
         writeTimeout: "1800s"
         idleTimeout: "180s"
-    redirections:
-      entryPoint:
-        to: websecure
-        scheme: https
-        permanent: true
+    http:
+      redirections:
+        entryPoint:
+          to: websecure
+          scheme: https
+          permanent: true
   websecure:
     port: 8443
     exposedPort: 443
@@ -48,9 +49,10 @@ ports:
         writeTimeout: "1800s"
         idleTimeout: "180s"
     asDefault: true
-    tls:
-      enabled: true
-      certResolver: ""
+    http:
+      tls:
+        enabled: true
+        certResolver: ""
 
 affinity: {{ k8s_traefik_affinity | to_json }}
 
