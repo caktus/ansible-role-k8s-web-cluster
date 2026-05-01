@@ -233,3 +233,12 @@ k8s_traefik_affinity:
           topologyKey: "kubernetes.io/hostname"
 
 ```
+
+### Note
+For Macbook users, in case you hit the following error when running the following task, `tasks/main.yml`, run `export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES`.
+
+```
+TASK [caktus.k8s-web-cluster : Download and Apply Traefik CRDs] ****************************************************************************************************************************************************************************
+objc[43681]: +[__NSCFConstantString initialize] may have been in progress in another thread when fork() was called.
+objc[43681]: +[__NSCFConstantString initialize] may have been in progress in another thread when fork() was called. We cannot safely call it or ignore it in the fork() child process. Crashing instead. Set a breakpoint on objc_initializeAfterForkError to debug.
+```
