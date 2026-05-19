@@ -13,10 +13,11 @@ deployment:
   replicas: {{ k8s_traefik_replica_count }}
 
 service:
-  type: LoadBalancer
   spec:
+    type: LoadBalancer
     loadBalancerIP: "{{ k8s_traefik_load_balancer_ip }}"
     externalTrafficPolicy: Local
+    loadBalancerSourceRanges: {{ k8s_traefik_source_ranges | default([], true) | to_json }}
 
 ports:
   web:
