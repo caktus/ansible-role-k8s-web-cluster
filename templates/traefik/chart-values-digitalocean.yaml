@@ -14,14 +14,15 @@ deployment:
   replicas: {{ k8s_traefik_replica_count }}
 
 service:
-  type: LoadBalancer
   annotations:
     service.beta.kubernetes.io/do-loadbalancer-name: "{{ k8s_digitalocean_load_balancer_hostname }}"
     service.beta.kubernetes.io/do-loadbalancer-size-unit: "{{ k8s_digitalocean_load_balancer_size_unit | default('1') }}"
     service.beta.kubernetes.io/do-loadbalancer-enable-proxy-protocol: "true"
     service.beta.kubernetes.io/do-loadbalancer-scheme: "external"
   spec:
+    type: LoadBalancer
     externalTrafficPolicy: Local
+    loadBalancerSourceRanges: {{ k8s_traefik_source_ranges | default([], true) | to_json }}
 
 ports:
   web:

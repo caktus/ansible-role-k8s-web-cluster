@@ -16,14 +16,15 @@ deployment:
   replicas: {{ k8s_traefik_replica_count }}
 
 service:
-  type: LoadBalancer
   annotations:
     service.beta.kubernetes.io/aws-load-balancer-type: "external"
     service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "instance"
     service.beta.kubernetes.io/aws-load-balancer-scheme: "internet-facing"
     service.beta.kubernetes.io/aws-load-balancer-attributes: "load_balancing.cross_zone.enabled=true"
   spec:
+    type: LoadBalancer
     externalTrafficPolicy: Local
+    loadBalancerSourceRanges: {{ k8s_traefik_source_ranges | default([], true) | to_json }}
 
 ports:
   web:
