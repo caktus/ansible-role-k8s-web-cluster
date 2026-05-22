@@ -1,0 +1,35 @@
+# Reference for values accepted by the traefik chart:
+# https://github.com/traefik/traefik-helm-chart/blob/master/traefik/values.yaml
+
+ingressClass:
+  enabled: true
+  isDefaultClass: {{ k8s_traefik_ingress_is_default }}
+  name: traefik
+
+deployment:
+  replicas: 1
+
+service:
+  spec:
+    type: ClusterIP
+
+ports:
+  web:
+    port: 8000
+    exposedPort: 80
+  websecure:
+    port: 8443
+    exposedPort: 443
+
+# Bind directly to the kind node's network so host port mappings work.
+hostNetwork: true
+
+providers:
+  kubernetesIngress:
+    enabled: true
+    publishedService:
+      enabled: false
+
+# No persistence needed in local kind mode (no ACME cert storage).
+persistence:
+  enabled: false
