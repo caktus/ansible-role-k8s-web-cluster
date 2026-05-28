@@ -1,6 +1,6 @@
 ---
 # Sanity check so we don't accidentally remove all access to the cluster on AWS:
-- when: (k8s_cluster_type == "aws") and (k8s_iam_users|length == 0)
+- when: (k8s_cluster_type == "aws") and (k8s_manage_iam_users | default(true)) and (k8s_iam_users|length == 0)
   ansible.builtin.fail:
     msg: "Set k8s_iam_users to a list of IAM usernames who should have access to manage the cluster"
 
@@ -25,6 +25,39 @@
 - name: Deploy AWS Load Balancer Controller and Dependecies
   tags: aws-lbc
   block:
+    - name: Get EKS OIDC issuer URL
+      ansible.builtin.command: >-
+        aws eks describe-cluster
+        --profile {{ aws_profile }}
+        --name {{ k8s_cluster_name }}
+        --query cluster.identity.oidc.issuer
+        --output text
+      register: _oidc_issuer_url
+      changed_when: false
+
+    - name: Get OIDC endpoint TLS thumbprint
+      ansible.builtin.shell: |
+        HOST=$(echo "{{ _oidc_issuer_url.stdout }}" | sed 's~https://~~' | cut -d/ -f1)
+        echo | openssl s_client -servername "$HOST" -connect "$HOST":443 -showcerts 2>/dev/null \
+          | awk '/BEGIN CERT/{found=1} found{cert=cert"\n"$0} /END CERT/{last=cert; cert=""} END{print last}' \
+          | openssl x509 -fingerprint -sha1 -noout \
+          | sed 's/.*Fingerprint=//' | tr -d ':' | tr '[:upper:]' '[:lower:]'
+      register: _oidc_thumbprint
+      changed_when: false
+
+    - name: Associate OIDC provider with EKS cluster
+      ansible.builtin.command: >-
+        aws iam create-open-id-connect-provider
+        --profile {{ aws_profile }}
+        --url {{ _oidc_issuer_url.stdout }}
+        --client-id-list sts.amazonaws.com
+        --thumbprint-list {{ _oidc_thumbprint.stdout }}
+      register: _oidc_provider
+      changed_when: _oidc_provider.rc == 0
+      failed_when:
+        - _oidc_provider.rc != 0
+        - "'EntityAlreadyExists' not in _oidc_provider.stderr"
+
     - name: Get AWS Account ID
       amazon.aws.aws_caller_info:
         aws_profile: "{{ aws_profile | mandatory }}"
@@ -54,11 +87,7 @@
           - "{{ iam_policy.policy.arn }}"
       vars:
         account_id: "{{ caller_info.account }}"
-        oidc_issuer: >-
-          {{ lookup('pipe', 'aws eks describe-cluster 
-          --name ' + k8s_cluster_name + ' 
-          --query "cluster.identity.oidc.issuer" 
-          --output text') | replace('https://', '') }}
+        oidc_issuer: "{{ _oidc_issuer_url.stdout | replace('https://', '') }}"
       register: iam_role
 
     - name: Create AWS Load Balancer Controller ServiceAccount
@@ -166,7 +195,7 @@
   when: k8s_install_cert_manager
 
 - name: Grant access to IAM users if aws
-  when: k8s_cluster_type == "aws"
+  when: (k8s_cluster_type == "aws") and (k8s_manage_iam_users | default(true))
   kubernetes.core.k8s:
     definition: "{{ lookup('template', 'aws/cluster-auth.yaml') }}"
     context: "{{ k8s_context }}"
