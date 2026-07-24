@@ -81,8 +81,8 @@ extraObjects:
       headers:
         stsSeconds: 63072000
         stsIncludeSubdomains: false
-logs:
-  general:
-    level: "{{ k8s_traefik_log_level }}"
-  access:
-    enabled: true
+
+log: 
+  level: "{{ k8s_traefik_log_level }}"
+accessLog:
+  enabled: true

@@ -99,8 +99,7 @@ extraObjects:
         - "{{ k8s_traefik_dashboard_hostname }}"
 {% endif %}
 
-logs: 
-  general:
-    level: "{{ k8s_traefik_log_level }}"
-  access:
-    enabled: true
+log: 
+  level: "{{ k8s_traefik_log_level }}"
+accessLog:
+  enabled: true
