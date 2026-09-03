@@ -140,3 +140,6 @@ k8s_traefik_affinity:
 # https://github.com/kubernetes-sigs/aws-load-balancer-controller/tree/main/helm/aws-load-balancer-controller
 # https://github.com/kubernetes-sigs/aws-load-balancer-controller/releases
 k8s_aws_load_balancer_controller_chart_version: v3.1.0
+
+# Sets the Traefik NLB to dual-stack (IPv4 & IPv6) if true, or single-stack (IPv4) if false
+k8s_traefik_dualstack: false

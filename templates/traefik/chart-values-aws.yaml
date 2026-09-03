@@ -21,6 +21,9 @@ service:
     service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "instance"
     service.beta.kubernetes.io/aws-load-balancer-scheme: "internet-facing"
     service.beta.kubernetes.io/aws-load-balancer-attributes: "load_balancing.cross_zone.enabled=true"
+{% if k8s_traefik_dualstack | default(false) %}
+    service.beta.kubernetes.io/aws-load-balancer-ip-address-type: "dualstack"
+{% endif %}
   spec:
     type: LoadBalancer
     externalTrafficPolicy: Local
