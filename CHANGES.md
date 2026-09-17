@@ -4,6 +4,11 @@ This project uses [semantic versioning](https://semver.org/).
 
 ## Changes
 
+### v1.14.0
+
+* Bump Traefik helm chart to v41.5.0.
+
+
 ### v1.13.0
 
 * Bump Traefik helm chart to v41.0.2.
